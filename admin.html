@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kini.Com.Bd - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 sm:p-8">
+
+    <!-- Login / Token Modal -->
+    <div id="login-sec" class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg border border-slate-200 mt-10">
+        <h2 class="text-xl font-bold text-slate-900 mb-1">GitHub Admin Login</h2>
+        <p class="text-xs text-slate-500 mb-4">গিটহাবের Personal Access Token দিয়ে লগইন করুন</p>
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-slate-700">GitHub Username</label>
+                <input type="text" id="gh-owner" placeholder="e.g. emdademon" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700">Repository Name</label>
+                <input type="text" id="gh-repo" placeholder="e.g. KiniCom-Store" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700">Personal Access Token (PAT)</label>
+                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <button onclick="loadRepoProducts()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">লগইন & প্রোডাক্ট লোড করুন</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Section -->
+    <div id="dashboard-sec" class="hidden max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200 gap-4">
+            <div>
+                <h1 class="text-xl font-black text-slate-900">Kini.Com.Bd প্রোডাক্ট ম্যানেজমেন্ট</h1>
+                <p class="text-xs text-slate-500 mt-0.5" id="repo-status">সংযুক্ত রিপোজিটরি</p>
+            </div>
+            <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md">+ নতুন প্রোডাক্ট যোগ করুন</button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b text-xs uppercase">
+                    <tr>
+                        <th class="p-4">ছবি</th>
+                        <th class="p-4">নাম</th>
+                        <th class="p-4">ক্যাটাগরি</th>
+                        <th class="p-4">মূল্য (৳)</th>
+                        <th class="p-4 text-right">অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list-rows" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form (Add/Edit Product) -->
+    <div id="prod-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <h3 class="text-lg font-bold text-slate-900" id="modal-title">প্রোডাক্ট তথ্য দিন</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700">প্রোডাক্টের নাম</label>
+                    <input type="text" id="p-name" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold text-slate-700">ক্যাটাগরি</label>
+                        <select id="p-category" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="Watches">Watches (ঘড়ি)</option>
+                            <option value="Jerseys">Jerseys (জার্সি)</option>
+                            <option value="T-Shirts">T-Shirts (টি-শার্ট)</option>
+                            <option value="Wall Canvas">Wall Canvas (ক্যানভাস)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700">মূল্য (৳)</label>
+                        <input type="number" id="p-price" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700">ইমেজ ইউআরএল / পাথ (যেমন: images/tshirt-1.jpg)</label>
+                    <input type="text" id="p-image" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700">বিবরণ / সাইজ অপশন</label>
+                    <textarea id="p-desc" rows="3" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. Sizes: M, L, XL | 100% Premium Comb Cotton"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-3 border-t">
+                <button onclick="closeModal()" class="px-4 py-2 border rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50">বাতিল</button>
+                <button onclick="saveProduct()" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-md">গিটহাবে সেভ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ghConfig = { owner: '', repo: '', token: '', sha: '' };
+        let productsData = [];
+        let editIndex = null;
+
+        function loadRepoProducts() {
+            ghConfig.owner = document.getElementById('gh-owner').value.trim();
+            ghConfig.repo = document.getElementById('gh-repo').value.trim();
+            ghConfig.token = document.getElementById('gh-token').value.trim();
+
+            if (!ghConfig.owner || !ghConfig.repo || !ghConfig.token) {
+                alert('দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
+                return;
+            }
+
+            fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/products.json`, {
+                headers: { 'Authorization': `token ${ghConfig.token}` }
+            })
+            .then(res => {
+                if(!res.ok) throw new Error('প্রোডাক্ট ডাটা ফাইল পাওয়া যায়নি বা টোকেন ভুল');
+                return res.json();
+            })
+            .then(data => {
+                ghConfig.sha = data.sha;
+                const content = decodeURIComponent(escape(atob(data.content)));
+                productsData = JSON.parse(content);
+                document.getElementById('login-sec').classList.add('hidden');
+                document.getElementById('dashboard-sec').classList.remove('hidden');
+                document.getElementById('repo-status').innerText = `সংযুক্ত: ${ghConfig.owner}/${ghConfig.repo}`;
+                renderTable();
+            })
+            .catch(err => alert('ত্রুটি: ' + err.message));
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('product-list-rows');
+            tbody.innerHTML = productsData.map((p, index) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3"><img src="${p.image}" class="w-10 h-10 object-cover rounded-lg border"></td>
+                    <td class="p-3 font-bold text-slate-800">${p.name}</td>
+                    <td class="p-3"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full text-xs font-bold">${p.category}</span></td>
+                    <td class="p-3 font-black text-slate-900">৳${p.price}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editProd(${index})" class="text-blue-600 font-bold mr-3 text-xs hover:underline">এডিট</button>
+                        <button onclick="deleteProd(${index})" class="text-red-600 font-bold text-xs hover:underline">ডিলিট</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddModal() {
+            editIndex = null;
+            document.getElementById('modal-title').innerText = "নতুন প্রোডাক্ট যোগ করুন";
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('prod-modal').classList.remove('hidden');
+        }
+
+        function editProd(idx) {
+            editIndex = idx;
+            const p = productsData[idx];
+            document.getElementById('modal-title').innerText = "প্রোডাক্ট তথ্য আপডেট করুন";
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-image').value = p.image;
+            document.getElementById('p-desc').value = p.description || '';
+            document.getElementById('prod-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('prod-modal').classList.add('hidden'); }
+
+        function deleteProd(idx) {
+            if (confirm('আপনি কি নিশ্চিত যে এই প্রোডাক্টটি ডিলিট করতে চান?')) {
+                productsData.splice(idx, 1);
+                commitToGitHub('Delete product');
+            }
+        }
+
+        function saveProduct() {
+            const priceVal = parseFloat(document.getElementById('p-price').value) || 0;
+            const item = {
+                id: editIndex !== null ? productsData[editIndex].id : 'prod_' + Date.now(),
+                name: document.getElementById('p-name').value.trim(),
+                category: document.getElementById('p-category').value,
+                price: priceVal,
+                originalPrice: priceVal + 400,
+                image: document.getElementById('p-image').value.trim(),
+                description: document.getElementById('p-desc').value.trim()
+            };
+
+            if (editIndex !== null) productsData[editIndex] = item;
+            else productsData.push(item);
+
+            commitToGitHub(editIndex !== null ? 'Update product info' : 'Add new product');
+        }
+
+        function commitToGitHub(message) {
+            const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(productsData, null, 2))));
+            fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/products.json`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${ghConfig.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message + ' via Admin Panel',
+                    content: updatedContent,
+                    sha: ghConfig.sha
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                ghConfig.sha = data.content.sha;
+                closeModal();
+                renderTable();
+                alert('সফলভাবে গিটহাবে সেভ হয়েছে! Vercel ওয়েবসাইট লাইভ আপডেট করে দেবে।');
+            })
+            .catch(err => alert('গিটহাবে সেভ করতে সমস্যা হয়েছে: ' + err.message));
+        }
+    </script>
+</body>
+</html>
