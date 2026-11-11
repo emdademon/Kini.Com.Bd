@@ -180,14 +180,24 @@
 
         function saveProduct() {
             const priceVal = parseFloat(document.getElementById('p-price').value) || 0;
+            const category = document.getElementById('p-category').value;
+            const previous = editIndex !== null ? productsData[editIndex] : null;
+            const defaultVariants = category === 'T-Shirts'
+                ? { sizes: ['M', 'L', 'XL', 'XXL'], fabric: '100% Premium Cotton' }
+                : category === 'Wall Canvas'
+                    ? { dimensions: ['12x18"', '16x24"', '24x36"'], frames: ['Black', 'Natural Wood', 'White'] }
+                    : category === 'Jerseys' ? { sizes: ['M', 'L', 'XL', 'XXL'] } : undefined;
             const item = {
-                id: editIndex !== null ? productsData[editIndex].id : 'prod_' + Date.now(),
+                id: previous ? previous.id : 'prod_' + Date.now(),
                 name: document.getElementById('p-name').value.trim(),
-                category: document.getElementById('p-category').value,
+                category,
                 price: priceVal,
                 originalPrice: priceVal + 400,
                 image: document.getElementById('p-image').value.trim(),
-                description: document.getElementById('p-desc').value.trim()
+                description: document.getElementById('p-desc').value.trim(),
+                ...((previous && previous.category === category && previous.variants) || defaultVariants
+                    ? { variants: (previous && previous.category === category && previous.variants) || defaultVariants }
+                    : {})
             };
 
             if (editIndex !== null) productsData[editIndex] = item;

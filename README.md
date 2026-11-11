@@ -1,6 +1,6 @@
-# Kini.com.bd — KiniCom BD (কিনি কম)
+# Kini.Com.Bd — KiniCom BD (কিনি কম)
 
-Responsive storefront for KiniCom BD. The site is a standalone HTML page styled to match the original Emerald Green and Slate light-theme redesign, with real catalog photography in `./images/`.
+Responsive static e-commerce storefront with an Emerald Green and Slate light theme. The catalog is loaded at runtime from the root `products.json` file; update that JSON to add or edit storefront products and variants.
 
 ## Run locally
 
@@ -9,11 +9,11 @@ npm install
 npm run dev
 ```
 
-Or serve `index.html` and the `images/` directory with any static web server. `npm run build` creates a deployable Vite `dist/` folder. The copies in `public/images/` ensure the real product photos are included in the production build; keep those synchronized with `images/` when replacing assets.
+Vite serves the storefront on port 5173. `npm run build` synchronizes the root `products.json` into `public/` before creating the deployable `dist/` directory. The copies in `public/images/` mirror the source assets in `images/` so Vite production builds can serve them at the same relative paths.
 
 ## Brand and contact
 
-- **Brand:** Kini.com.bd / KiniCom BD (কিনি কম)
+- **Store title:** Kini.Com.Bd
 - **Tagline:** “Premium Men’s Watches. আপনার পার্সোনালিটি আর স্ট্যাটাসের নিখুঁত সঙ্গী!”
 - **Logo:** `./images/kini.com.jpg`
 - **Phone / WhatsApp:** +880 1312-866114 / 01312-866114
@@ -22,16 +22,27 @@ Or serve `index.html` and the `images/` directory with any static web server. `n
 
 ## Store features
 
-- Original light theme: Slate surfaces and Emerald `#059669` / `#10b981` controls, announcement bar, sticky glass header, responsive hero carousel, and flash-sale timer.
-- Live product search, extensible category tabs (All, Watches, Jerseys, Wall Canvas), wishlist, quick view, toast notifications, and slide-over cart.
-- Jersey size and optional personalization fields in quick view.
-- Checkout collects customer details, delivery zone, and bKash Transaction ID; it calculates **৳70 inside Chattogram** or **৳130 outside Chattogram** and opens WhatsApp with the complete order summary.
-- **Advance bKash payment only. Cash on Delivery is not offered.** bKash Personal: `01312-866114`.
+- Light theme with Slate surfaces, Emerald `#059669` / `#10b981` controls, announcement bar, sticky glass header, carousel, and flash-sale timer.
+- Runtime catalog via `fetch('./products.json')`; category pills for All Products, Watches (ঘড়ি), Jerseys (জার্সি), T-Shirts (টি-শার্ট), and Wall Canvas (ক্যানভাস).
+- Search suggestions, wishlist, quick view, cart drawer, and toast notifications.
+- T-shirts include M/L/XL/XXL sizing and a cotton fabric spec. Jerseys include size selection. Wall Canvas includes 12x18, 16x24, and 24x36 inch dimensions with frame finish selection.
+- Checkout accepts advance bKash payment only, requires a TrxID, and calculates ৳70 delivery inside Chattogram or ৳130 outside. WhatsApp order summaries open to `+8801312866114`.
+- Footer includes the discreet `Admin Portal` link to `admin.html`.
 
-## Order logging webhook
+## Catalog format
 
-In `index.html`, set `GOOGLE_APPS_SCRIPT_WEBHOOK_URL` to the deployed Google Apps Script Web App URL. On order submission, the storefront posts the order payload to that endpoint and opens the formatted order in WhatsApp (`+8801312866114`). The webhook is intentionally blank until the store owner supplies a deployment URL. Deploy the Apps Script as a web app with access configured to accept requests from your storefront.
+`products.json` is the source catalog. A product uses `id`, `name`, `category`, `price`, `image`, and optional `originalPrice`, `description`, and `variants`. Example variant fields:
 
-## Catalog and image assets
+```json
+{"sizes":["M","L","XL","XXL"],"fabric":"100% Premium Cotton"}
+```
 
-The `PRODUCTS` array is in the inline script in `index.html`. Catalog photos are stored in `images/Watches/` and `images/Jersey/`. `public/images/` mirrors those image paths for Vite production builds. To add categories, add products with their category name; add a category button with the same name in the header.
+```json
+{"dimensions":["12x18\"","16x24\"","24x36\""],"frames":["Black","Natural Wood","White"]}
+```
+
+Images are under `images/Watches/`, `images/Jersey/`, and `images/Products/`. Keep `public/images/` synchronized when adding or replacing assets. The admin page writes the catalog to the repository's root `products.json`.
+
+## Payment policy
+
+Advance bKash payment only. bKash Personal: `01312-866114`. Cash on Delivery is not offered.
