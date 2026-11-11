@@ -21,11 +21,11 @@
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-700">Repository Name</label>
-                <input type="text" id="gh-repo" placeholder="e.g. KiniCom-Store" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <input type="text" id="gh-repo" placeholder="e.g. Kini.Com.Bd" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-700">Personal Access Token (PAT)</label>
-                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <input type="password" id="gh-token" placeholder="github_pat_xxxxxxxx" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
             </div>
             <button onclick="loadRepoProducts()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">লগইন & প্রোডাক্ট লোড করুন</button>
         </div>
@@ -82,12 +82,12 @@
                     </div>
                 </div>
                 <div>
-                    <label class="font-bold text-slate-700">ইমেজ ইউআরএল / পাথ (যেমন: images/tshirt-1.jpg)</label>
+                    <label class="font-bold text-slate-700">ইমেজ ইউআরএল / পাথ (যেমন: images/watch-blue.jpg)</label>
                     <input type="text" id="p-image" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="font-bold text-slate-700">বিবরণ / সাইজ অপশন</label>
-                    <textarea id="p-desc" rows="3" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="e.g. Sizes: M, L, XL | 100% Premium Comb Cotton"></textarea>
+                    <textarea id="p-desc" rows="3" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
@@ -116,7 +116,7 @@
                 headers: { 'Authorization': `token ${ghConfig.token}` }
             })
             .then(res => {
-                if(!res.ok) throw new Error('প্রোডাক্ট ডাটা ফাইল পাওয়া যায়নি বা টোকেন ভুল');
+                if(!res.ok) throw new Error('products.json ফাইল পাওয়া যায়নি বা টোকেন ভুল');
                 return res.json();
             })
             .then(data => {
@@ -180,24 +180,14 @@
 
         function saveProduct() {
             const priceVal = parseFloat(document.getElementById('p-price').value) || 0;
-            const category = document.getElementById('p-category').value;
-            const previous = editIndex !== null ? productsData[editIndex] : null;
-            const defaultVariants = category === 'T-Shirts'
-                ? { sizes: ['M', 'L', 'XL', 'XXL'], fabric: '100% Premium Cotton' }
-                : category === 'Wall Canvas'
-                    ? { dimensions: ['12x18"', '16x24"', '24x36"'], frames: ['Black', 'Natural Wood', 'White'] }
-                    : category === 'Jerseys' ? { sizes: ['M', 'L', 'XL', 'XXL'] } : undefined;
             const item = {
-                id: previous ? previous.id : 'prod_' + Date.now(),
+                id: editIndex !== null ? productsData[editIndex].id : 'prod_' + Date.now(),
                 name: document.getElementById('p-name').value.trim(),
-                category,
+                category: document.getElementById('p-category').value,
                 price: priceVal,
                 originalPrice: priceVal + 400,
                 image: document.getElementById('p-image').value.trim(),
-                description: document.getElementById('p-desc').value.trim(),
-                ...((previous && previous.category === category && previous.variants) || defaultVariants
-                    ? { variants: (previous && previous.category === category && previous.variants) || defaultVariants }
-                    : {})
+                description: document.getElementById('p-desc').value.trim()
             };
 
             if (editIndex !== null) productsData[editIndex] = item;
