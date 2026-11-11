@@ -1,0 +1,15 @@
+{
+  "name": "kinicom-bd",
+  "private": true,
+  "version": "3.0.0",
+  "description": "KiniCom BD static storefront",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173"
+  },
+  "devDependencies": {
+    "vite": "^6.4.6"
+  }
+}
