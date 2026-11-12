@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Vite serves the storefront on port 5173. `npm run build` synchronizes the root `products.json` into `public/` before creating the deployable `dist/` directory. The copies in `public/images/` mirror the source assets in `images/` so Vite production builds can serve them at the same relative paths.
+Vite serves the storefront on port 5173. `npm run build` synchronizes the root `products.json` into `public/` before creating the deployable `dist/` directory. Vite builds both `index.html` and the root `admin.html` as page entries, so the Admin Portal is deployed at `/admin.html`. The copies in `public/images/` mirror the source assets in `images/` so Vite production builds can serve them at the same relative paths.
 
 ## Brand and contact
 
