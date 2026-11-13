@@ -82,5 +82,36 @@
     let remaining=8*60*60;function countdown(){const tick=()=>{remaining=remaining>0?remaining-1:8*60*60;setText('timer-hours',String(Math.floor(remaining/3600)).padStart(2,'0'));setText('timer-minutes',String(Math.floor(remaining%3600/60)).padStart(2,'0'));setText('timer-seconds',String(remaining%60).padStart(2,'0'))};tick();setInterval(tick,1000)}
     document.addEventListener('keydown',e=>{if(e.key==='Escape'){toggleCartDrawer(false);document.querySelectorAll('.modal-wrap.open').forEach(m=>closeModal(m.id))}});
   </script>
+  <script>
+    // Visitor tracking: total visits + live presence. Enabled only when
+    // site-config.json has an analyticsUrl. Every call is fire-and-forget and
+    // wrapped so a tracking failure can never affect the storefront.
+    (function(){
+      const HEARTBEAT_MS=25000;
+      const store={get(k){try{return sessionStorage.getItem(k)}catch(_){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(_){}}};
+      async function start(){
+        let url='';
+        try{const res=await fetch(`./site-config.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)return;url=String((await res.json()).analyticsUrl||'').trim()}catch(_){return}
+        if(!/^https:\/\//i.test(url))return;
+        let sid=store.get('kc_visitor_sid');
+        if(!sid){
+          try{sid=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('')}catch(_){sid=Date.now().toString(36)+Math.random().toString(36).slice(2,12)}
+          store.set('kc_visitor_sid',sid);
+        }
+        const endpoint=action=>`${url}${url.includes('?')?'&':'?'}action=${action}&sid=${encodeURIComponent(sid)}`;
+        const send=action=>{try{fetch(endpoint(action),{method:'GET',mode:'no-cors',credentials:'omit',cache:'no-store',keepalive:true}).catch(()=>{})}catch(_){}};
+        let left=false;
+        const ping=()=>{if(document.visibilityState==='visible'){left=false;send('ping')}};
+        const leave=()=>{if(left)return;left=true;try{if(!(navigator.sendBeacon&&navigator.sendBeacon(endpoint('leave'))))send('leave')}catch(_){}};
+        if(!store.get('kc_visit_counted')){send('visit');store.set('kc_visit_counted','1')}else ping();
+        setInterval(ping,HEARTBEAT_MS);
+        document.addEventListener('visibilitychange',ping);          // back to the tab: live again right away
+        window.addEventListener('pageshow',e=>{if(e.persisted)ping()}); // restored from the back/forward cache
+        window.addEventListener('beforeunload',leave);
+        window.addEventListener('pagehide',leave);
+      }
+      try{start().catch(()=>{})}catch(_){}
+    })();
+  </script>
 </body>
 </html>

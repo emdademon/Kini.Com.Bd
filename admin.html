@@ -56,6 +56,53 @@
             </div>
         </div>
 
+        <!-- Live Traffic & Visitor Analytics -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-black text-slate-900">Live Traffic &amp; Visitor Analytics</h2>
+                    <p id="traffic-status" class="text-xs text-slate-500" aria-live="polite">লোড হচ্ছে...</p>
+                </div>
+                <button type="button" id="traffic-refresh" onclick="pollStats(true)" class="shrink-0 border text-slate-600 font-bold text-xs px-3 py-2 rounded-xl hover:bg-slate-50 disabled:opacity-50">রিফ্রেশ</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                        <span class="relative flex h-3 w-3">
+                            <span id="live-dot-ping" class="hidden animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span id="live-dot" class="relative inline-flex rounded-full h-3 w-3 bg-slate-300"></span>
+                        </span>
+                        বর্তমানে লাইভ ভিজিটর (Present Live Online)
+                    </div>
+                    <div id="stat-live" class="mt-2 text-4xl font-black text-emerald-700 leading-none">—</div>
+                    <div id="stat-live-en" class="mt-1 text-xs text-emerald-800/70">&nbsp;</div>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div class="text-xs font-bold text-slate-700">মোট ভিজিট সংখ্যা (Total Website Visits)</div>
+                    <div id="stat-total" class="mt-2 text-4xl font-black text-slate-900 leading-none">—</div>
+                    <div id="stat-total-en" class="mt-1 text-xs text-slate-500">&nbsp;</div>
+                </div>
+            </div>
+            <form id="analytics-form" class="text-xs space-y-1.5">
+                <label for="analytics-url" class="font-bold text-slate-700">অ্যানালিটিক্স লিংক সেটআপ (Visitor Counter URL)</label>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="url" id="analytics-url" placeholder="https://script.google.com/macros/s/XXXX/exec" autocomplete="off" spellcheck="false" class="flex-1 min-w-0 border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <button type="submit" id="analytics-save" class="shrink-0 px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-md disabled:opacity-60">লিংক সেভ করুন</button>
+                </div>
+                <p id="analytics-error" class="hidden text-red-600 font-bold"></p>
+                <details class="text-slate-600">
+                    <summary class="cursor-pointer text-[11px] text-slate-500">লিংক কোথায় পাব? (Google Apps Script সেটআপ)</summary>
+                    <ol class="list-decimal pl-5 mt-2 space-y-1">
+                        <li><button type="button" id="copy-counter-code" onclick="copyCounterCode(this)" class="text-emerald-700 font-bold underline">কাউন্টার কোড কপি করুন</button> (রিপোজিটরির <code>scripts/visitor-counter.gs</code> ফাইল)।</li>
+                        <li><a href="https://script.google.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">script.google.com</a> → New project খুলে আগের কোড মুছে কপি করা কোড পেস্ট করুন।</li>
+                        <li>Deploy → New deployment → Web app। <b>Execute as: Me</b>, <b>Who has access: Anyone</b> দিন।</li>
+                        <li>যে Web app URL পাবেন (শেষে <code>/exec</code>) সেটি উপরের ঘরে পেস্ট করে “লিংক সেভ করুন” চাপুন।</li>
+                    </ol>
+                    <p class="mt-2">লিংক ফাঁকা রেখে সেভ করলে ট্র্যাকিং বন্ধ হবে। সেভ করার পর ওয়েবসাইট আপডেট হতে কয়েক মিনিট লাগে।</p>
+                </details>
+            </form>
+        </section>
+
         <!-- Universal Category Bulk Edit -->
         <section class="bg-white rounded-2xl shadow-sm border-2 border-emerald-200 overflow-hidden">
             <div class="bg-emerald-50 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-200">
@@ -377,6 +424,7 @@
                 $('dashboard-sec').classList.remove('hidden');
                 showBulkTab('uniform');
                 refreshViews();
+                loadSiteConfig();
             } catch (err) {
                 const hint = err.status === 401 ? 'টোকেন ভুল বা মেয়াদ শেষ' : err.status === 404 ? 'রিপোজিটরি বা products.json পাওয়া যায়নি' : err.message;
                 showError(errorBox, 'ত্রুটি: ' + hint);
@@ -854,6 +902,146 @@
             if (p && select.value !== 'All' && select.value !== p.category) { select.value = 'All'; renderSheet(); }
             const tr = [...$('sheet-rows').querySelectorAll('tr[data-id]')].find(r => r.dataset.id === id);
             if (tr) { tr.scrollIntoView({ block: 'center', behavior: 'smooth' }); tr.querySelector('[data-field="name"]').focus({ preventScroll: true }); }
+        }
+
+        // ---- Live traffic & visitor analytics -------------------------------
+        const SITE_CONFIG_PATH = 'public/site-config.json';
+        const COUNTER_SCRIPT_PATH = 'scripts/visitor-counter.gs';
+        const STATS_POLL_MS = 10000;
+        let siteConfig = { analyticsUrl: '' };
+        let statsTimer = null, statsSeq = 0;
+
+        const analyticsUrl = () => String(siteConfig.analyticsUrl || '').trim();
+        const bn = n => Number(n).toLocaleString('bn-BD');
+        const en = n => Number(n).toLocaleString('en-US');
+        const utf8ToBase64 = s => { const b = new TextEncoder().encode(s); let bin = ''; for (let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(bin); };
+
+        async function loadSiteConfig() {
+            try {
+                const file = await api(`/contents/${SITE_CONFIG_PATH}?ref=${encodeURIComponent(headSha)}&t=${Date.now()}`);
+                const parsed = JSON.parse(base64ToUtf8(file.content));
+                siteConfig = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : { analyticsUrl: '' };
+            } catch (_) {
+                siteConfig = { analyticsUrl: '' };     // file missing or unreadable: tracking is simply off
+            }
+            $('analytics-url').value = analyticsUrl();
+            startStatsPolling();
+        }
+
+        function setTrafficStatus(text, isError) {
+            $('traffic-status').textContent = text;
+            $('traffic-status').className = 'text-xs ' + (isError ? 'text-red-600 font-bold' : 'text-slate-500');
+        }
+
+        function showStats(live, total) {
+            const has = live !== null;
+            $('stat-live').textContent = has ? bn(live) : '—';
+            $('stat-live-en').textContent = has ? `${en(live)} online now` : '\u00a0';
+            $('stat-total').textContent = has ? bn(total) : '—';
+            $('stat-total-en').textContent = has ? `${en(total)} total visits` : '\u00a0';
+            $('live-dot').className = 'relative inline-flex rounded-full h-3 w-3 ' + (has ? 'bg-emerald-500' : 'bg-slate-300');
+            $('live-dot-ping').classList.toggle('hidden', !has);
+        }
+
+        async function pollStats(manual) {
+            const url = analyticsUrl();
+            if (!url) {
+                showStats(null);
+                return setTrafficStatus('ভিজিটর কাউন্টার চালু নেই। নিচে অ্যানালিটিক্স লিংক সেভ করুন।');
+            }
+            const seq = ++statsSeq;
+            const btn = $('traffic-refresh');
+            if (manual) btn.disabled = true;
+            try {
+                const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=stats&t=${Date.now()}`, { credentials: 'omit', cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                const live = Number(data.live), total = Number(data.total);
+                if (data.ok === false || !Number.isFinite(live) || !Number.isFinite(total)) throw new Error(data.error || 'Unexpected response');
+                if (seq !== statsSeq) return;          // a newer request already answered
+                showStats(live, total);
+                setTrafficStatus(`লাইভ · সর্বশেষ আপডেট ${new Date().toLocaleTimeString('bn-BD')} · প্রতি ১০ সেকেন্ডে আপডেট হয়`);
+            } catch (_) {
+                if (seq !== statsSeq) return;
+                $('live-dot').className = 'relative inline-flex rounded-full h-3 w-3 bg-red-400';
+                $('live-dot-ping').classList.add('hidden');
+                setTrafficStatus('কাউন্টারের সাথে সংযোগ করা যায়নি। লিংকটি ঠিক আছে কি না এবং Web app-এর access “Anyone” দেওয়া আছে কি না দেখুন।', true);
+            } finally {
+                if (manual) btn.disabled = false;
+            }
+        }
+
+        function startStatsPolling() {
+            clearInterval(statsTimer);
+            statsSeq++;                                 // ignore answers for a previous URL
+            showStats(null);
+            pollStats();
+            statsTimer = analyticsUrl() ? setInterval(() => { if (!document.hidden) pollStats(); }, STATS_POLL_MS) : null;
+        }
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && gh.branch && analyticsUrl()) pollStats(); });
+
+        // Saves the URL into public/site-config.json with the Contents API. The file's
+        // newest sha is fetched right before each PUT, and a conflict is retried.
+        $('analytics-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = $('analytics-save');
+            if (btn.disabled) return;
+            const errorBox = $('analytics-error');
+            hideError(errorBox);
+            const url = $('analytics-url').value.trim();
+            if (url && !/^https:\/\/\S+$/i.test(url)) return showError(errorBox, 'সঠিক লিংক দিন (https:// দিয়ে শুরু হতে হবে)');
+            if (url && !/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/i.test(url)
+                && !confirm('এটি Google Apps Script Web App লিংকের মতো দেখাচ্ছে না (শেষে /exec থাকার কথা)। তবুও সেভ করবেন?')) return;
+            if (!url && !confirm('লিংক ফাঁকা। সেভ করলে ভিজিটর ট্র্যাকিং বন্ধ হয়ে যাবে। চালিয়ে যাবেন?')) return;
+
+            const restore = setBusy(btn);
+            try {
+                await enqueue(async () => {
+                    const filePath = `/contents/${SITE_CONFIG_PATH}`;
+                    for (let attempt = 0; ; attempt++) {
+                        let sha, current = {};
+                        try {
+                            const file = await api(`${filePath}?ref=${encodeURIComponent(gh.branch)}&t=${Date.now()}`);
+                            sha = file.sha;
+                            try { const parsed = JSON.parse(base64ToUtf8(file.content)); if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) current = parsed; } catch (_) {}
+                        } catch (err) { if (err.status !== 404) throw err; }
+                        const next = { ...current, analyticsUrl: url };
+                        try {
+                            await api(filePath, { method: 'PUT', body: JSON.stringify({
+                                message: `${url ? 'Set' : 'Clear'} visitor counter URL via Admin Panel`,
+                                content: utf8ToBase64(JSON.stringify(next, null, 2) + '\n'),
+                                branch: gh.branch,
+                                ...(sha ? { sha } : {})
+                            }) });
+                            siteConfig = next;
+                            return;
+                        } catch (err) {
+                            if (!(err.status === 409 || err.status === 422) || attempt >= 3) throw err;
+                            await sleep(500 * (attempt + 1));
+                        }
+                    }
+                });
+                $('analytics-url').value = analyticsUrl();
+                startStatsPolling();
+                toast(url ? 'লিংক সেভ হয়েছে। কয়েক মিনিটের মধ্যে ওয়েবসাইটে ট্র্যাকিং চালু হবে।' : 'ভিজিটর ট্র্যাকিং বন্ধ করা হয়েছে');
+            } catch (err) {
+                showError(errorBox, 'সেভ করতে সমস্যা হয়েছে: ' + saveErrorText(err));
+            } finally {
+                restore();
+            }
+        });
+
+        async function copyCounterCode(btn) {
+            const label = btn.textContent;
+            try {
+                const file = await api(`/contents/${COUNTER_SCRIPT_PATH}?ref=${encodeURIComponent(gh.branch)}`);
+                await navigator.clipboard.writeText(base64ToUtf8(file.content));
+                btn.textContent = 'কপি হয়েছে ✓';
+            } catch (_) {
+                btn.textContent = 'কপি করা যায়নি';
+                window.open(`https://github.com/${encodeURIComponent(gh.owner)}/${encodeURIComponent(gh.repo)}/blob/${encodeURIComponent(gh.branch)}/${COUNTER_SCRIPT_PATH}`, '_blank', 'noopener');
+            }
+            setTimeout(() => { btn.textContent = label; }, 2500);
         }
 
         // ---- Misc ----------------------------------------------------------

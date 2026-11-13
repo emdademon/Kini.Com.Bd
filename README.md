@@ -49,6 +49,10 @@ Product photos live in `public/images/<folder>/` (`Watches`, `Jersey`, `T-Shirt`
 
 Before every save the panel reads the newest branch head, applies the change on top of it, and retries by itself on a conflict, so rapid edits never require a page reload. The **Bulk Edit** section at the top of the dashboard offers a one-click price update for a whole category and an inline spreadsheet (title, prices, image) whose changes are saved together in one commit.
 
+## Visitor tracking
+
+`public/site-config.json` holds `{ "analyticsUrl": "" }`. While it is empty, no tracking runs. When it contains the URL of the Google Apps Script web app in `scripts/visitor-counter.gs`, the storefront counts one visit per browser tab, sends a heartbeat every 25 seconds while the tab is visible, and signals when the tab closes. The Admin Portal shows live visitors and total visits (refreshed every 10 seconds) and has a field that saves the URL into `public/site-config.json`. Setup steps are at the top of `scripts/visitor-counter.gs` and inside the Admin Portal. Only a random per-tab id is stored.
+
 ## Payment policy
 
 Advance bKash payment only. bKash Personal: `01312-866114`. Cash on Delivery is not offered.
