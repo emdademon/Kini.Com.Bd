@@ -91,7 +91,9 @@
       const store={get(k){try{return sessionStorage.getItem(k)}catch(_){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(_){}}};
       async function start(){
         let url='';
-        try{const res=await fetch(`./site-config.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)return;url=String((await res.json()).analyticsUrl||'').trim()}catch(_){return}
+        try{const res=await fetch(`./site-config.json?t=${Date.now()}`,{cache:'no-store'});if(res.ok)url=String((await res.json()).analyticsUrl||'').trim()}catch(_){}
+        // Until the site is rebuilt with a newly saved link, use the one the admin panel stored in this browser.
+        if(!url){try{url=(localStorage.getItem('kc_analytics_url')||'').trim()}catch(_){}}
         if(!/^https:\/\//i.test(url))return;
         let sid=store.get('kc_visitor_sid');
         if(!sid){
@@ -99,7 +101,8 @@
           store.set('kc_visitor_sid',sid);
         }
         const endpoint=action=>`${url}${url.includes('?')?'&':'?'}action=${action}&sid=${encodeURIComponent(sid)}`;
-        const send=action=>{try{fetch(endpoint(action),{method:'GET',mode:'no-cors',credentials:'omit',cache:'no-store',keepalive:true}).catch(()=>{})}catch(_){}};
+        // Plain GET with no custom headers, so Apps Script's 302 redirect never needs a CORS preflight.
+        const send=action=>{try{fetch(endpoint(action),{method:'GET',redirect:'follow'}).catch(()=>{})}catch(_){}};
         let left=false;
         const ping=()=>{if(document.visibilityState==='visible'){left=false;send('ping')}};
         const leave=()=>{if(left)return;left=true;try{if(!(navigator.sendBeacon&&navigator.sendBeacon(endpoint('leave'))))send('leave')}catch(_){}};

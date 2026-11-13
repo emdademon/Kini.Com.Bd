@@ -51,7 +51,7 @@ Before every save the panel reads the newest branch head, applies the change on 
 
 ## Visitor tracking
 
-`public/site-config.json` holds `{ "analyticsUrl": "" }`. While it is empty, no tracking runs. When it contains the URL of the Google Apps Script web app in `scripts/visitor-counter.gs`, the storefront counts one visit per browser tab, sends a heartbeat every 25 seconds while the tab is visible, and signals when the tab closes. The Admin Portal shows live visitors and total visits (refreshed every 10 seconds) and has a field that saves the URL into `public/site-config.json`. Setup steps are at the top of `scripts/visitor-counter.gs` and inside the Admin Portal. Only a random per-tab id is stored.
+`public/site-config.json` (served by the site) and the root `site-config.json` both hold `{ "analyticsUrl": "" }`; the Admin Portal writes them together in one commit and also keeps the link in the browser's `localStorage` (`kc_analytics_url`) so the dashboard connects before the site is rebuilt. While it is empty, no tracking runs. When it contains the URL of the Google Apps Script web app in `scripts/visitor-counter.gs`, the storefront counts one visit per browser tab, sends a heartbeat every 25 seconds while the tab is visible, and signals when the tab closes. The Admin Portal shows live visitors and total visits (refreshed every 10 seconds) and has a field that saves the URL into `public/site-config.json`. Setup steps are at the top of `scripts/visitor-counter.gs` and inside the Admin Portal. Only a random per-tab id is stored.
 
 ## Payment policy
 
