@@ -67,7 +67,7 @@
     "name": "Portugal Special Edition Black Jersey",
     "category": "Jerseys",
     "price": 319,
-    "originalPrice": 599,
+    "originalPrice": 499,
     "image": "images/Jersey/jersey-portugal.jpeg",
     "description": "Portugal-inspired fan edition jersey.",
     "variants": {
@@ -84,7 +84,7 @@
     "name": "Brazil Away Black & Blue Edition Jersey",
     "category": "Jerseys",
     "price": 319,
-    "originalPrice": 599,
+    "originalPrice": 499,
     "image": "images/Jersey/jersey-brazil.jpeg",
     "description": "Brazil away black and blue fan edition jersey.",
     "variants": {
@@ -100,8 +100,8 @@
     "id": "j3",
     "name": "Brazil Classic Yellow Edition Jersey",
     "category": "Jerseys",
-    "price": 1150,
-    "originalPrice": 1600,
+    "price": 319,
+    "originalPrice": 499,
     "image": "images/Jersey/jersey-brazil yellow.jpeg",
     "description": "Brazil classic yellow fan edition jersey.",
     "variants": {
