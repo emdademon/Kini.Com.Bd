@@ -47,6 +47,8 @@ Product photos live in `public/images/<folder>/` (`Watches`, `Jersey`, `T-Shirt`
 
 `admin.html` (copied to `public/admin.html` at build time) manages the catalog through the GitHub API using a Personal Access Token with **Contents: Read and write** on this repository. The Add/Edit form covers title, category, present price, original/cut price, image upload with preview, and description. Saving makes a single commit to the default branch containing the uploaded photo (`public/images/<folder>/<filename>`) plus `products.json` and `public/products.json`. Deleting a product removes only its catalog entry; the image file is kept.
 
+Before every save the panel reads the newest branch head, applies the change on top of it, and retries by itself on a conflict, so rapid edits never require a page reload. The **Bulk Edit** section at the top of the dashboard offers a one-click price update for a whole category and an inline spreadsheet (title, prices, image) whose changes are saved together in one commit.
+
 ## Payment policy
 
 Advance bKash payment only. bKash Personal: `01312-866114`. Cash on Delivery is not offered.

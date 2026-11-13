@@ -56,6 +56,82 @@
             </div>
         </div>
 
+        <!-- Universal Category Bulk Edit -->
+        <section class="bg-white rounded-2xl shadow-sm border-2 border-emerald-200 overflow-hidden">
+            <div class="bg-emerald-50 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-200">
+                <div>
+                    <h2 class="text-base font-black text-emerald-900">ইউনিভার্সাল ক্যাটাগরি এডিট (Bulk Edit)</h2>
+                    <p class="text-xs text-emerald-800/80">পুরো ক্যাটাগরির দাম একসাথে বদলান, অথবা টেবিলে সব প্রোডাক্ট একসাথে এডিট করুন</p>
+                </div>
+                <div class="flex gap-1 bg-white border border-emerald-200 rounded-xl p-1 text-xs font-bold self-start" role="tablist">
+                    <button type="button" id="tab-uniform" role="tab" onclick="showBulkTab('uniform')" class="px-3 py-2 rounded-lg">এক ক্লিকে দাম আপডেট</button>
+                    <button type="button" id="tab-sheet" role="tab" onclick="showBulkTab('sheet')" class="px-3 py-2 rounded-lg">একসাথে সব এডিট</button>
+                </div>
+            </div>
+
+            <!-- Mode A: uniform category price -->
+            <form id="uniform-form" class="p-5 space-y-3 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label for="u-category" class="font-bold text-slate-700">ক্যাটাগরি</label>
+                        <select id="u-category" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="Watches">Watches (ঘড়ি)</option>
+                            <option value="Jerseys">Jerseys (জার্সি)</option>
+                            <option value="T-Shirts">T-Shirts (টি-শার্ট)</option>
+                            <option value="Wall Canvas">Wall Canvas (ক্যানভাস)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="u-price" class="font-bold text-slate-700">নতুন বর্তমান মূল্য ৳</label>
+                        <input type="number" id="u-price" min="1" step="1" inputmode="numeric" placeholder="ফাঁকা = আগের মতো" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label for="u-original" class="font-bold text-slate-700">নতুন আগের মূল্য ৳</label>
+                        <input type="number" id="u-original" min="1" step="1" inputmode="numeric" placeholder="ফাঁকা = আগের মতো" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+                <p id="u-summary" class="text-slate-500"></p>
+                <p id="u-error" class="hidden text-red-600 font-bold"></p>
+                <button type="submit" id="u-save" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-md disabled:opacity-60">পুরো ক্যাটাগরিতে অ্যাপ্লাই ও সেভ করুন</button>
+            </form>
+
+            <!-- Mode B: inline spreadsheet -->
+            <div id="sheet-panel" class="hidden p-5 space-y-3 text-xs">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                    <div>
+                        <label for="s-category" class="font-bold text-slate-700">ক্যাটাগরি ফিল্টার</label>
+                        <select id="s-category" class="block border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="All">All (সব)</option>
+                            <option value="Watches">Watches (ঘড়ি)</option>
+                            <option value="Jerseys">Jerseys (জার্সি)</option>
+                            <option value="T-Shirts">T-Shirts (টি-শার্ট)</option>
+                            <option value="Wall Canvas">Wall Canvas (ক্যানভাস)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span id="s-count" class="text-slate-500 font-bold"></span>
+                        <button type="button" id="s-reset" onclick="resetSheet()" class="px-3 py-2.5 border rounded-xl font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50">পরিবর্তন বাতিল</button>
+                        <button type="button" id="s-save" onclick="saveSheet()" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-md disabled:opacity-60">সব পরিবর্তন একসাথে সেভ করুন (Save All Changes)</button>
+                    </div>
+                </div>
+                <p id="s-error" class="hidden text-red-600 font-bold"></p>
+                <div class="border rounded-xl overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm min-w-[760px]">
+                        <thead class="bg-slate-50 text-slate-500 font-bold border-b text-xs">
+                            <tr>
+                                <th class="p-2 w-14">ছবি</th>
+                                <th class="p-2">Product Title</th>
+                                <th class="p-2 w-28">বর্তমান মূল্য ৳</th>
+                                <th class="p-2 w-28">আগের মূল্য ৳</th>
+                                <th class="p-2 w-72">Image (আপলোড / পাথ)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sheet-rows" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-slate-50 text-slate-500 font-bold border-b text-xs uppercase">
@@ -130,6 +206,8 @@
             </div>
         </form>
     </div>
+    <div id="toast" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-xl max-w-[90vw] text-center"></div>
+
 
     <script>
         // ---- Configuration -------------------------------------------------
@@ -146,22 +224,28 @@
         const IMAGE_ROOT = 'public/images';
         const MAX_IMAGE_EDGE = 1600;          // px, longer side after resize
         const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+        const MAX_COMMIT_ATTEMPTS = 5;
+        const SAVING_TEXT = 'সেভ হচ্ছে...';
 
         let gh = { owner: '', repo: '', token: '', branch: '' };
+        let headSha = '';                     // commit that productsData was read from / last written as
         let productsData = [];
-        let editIndex = null;
-        let pendingImage = null;              // { base64, ext, baseName, previewUrl }
+        let editId = null;                    // id of the product open in the modal, null when adding
+        let pendingImage = null;              // modal upload: { base64, ext, baseName, previewUrl }
+        let sheetDrafts = {};                 // spreadsheet edits: id -> { name, price, originalPrice, image, pendingImage }
         const sessionPreviews = {};           // image path -> data URL for images uploaded this session
 
         const $ = id => document.getElementById(id);
         const escapeHTML = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const encodePath = p => p.split('/').map(encodeURIComponent).join('/');
-        const utf8ToBase64 = s => { const b = new TextEncoder().encode(s); let bin = ''; for (let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(bin); };
         const base64ToUtf8 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        const cleanPath = v => String(v ?? '').trim().replace(/^\.?\//, '');
 
         // ---- GitHub API ----------------------------------------------------
         async function api(path, options = {}) {
             const res = await fetch(`https://api.github.com/repos/${encodeURIComponent(gh.owner)}/${encodeURIComponent(gh.repo)}${path}`, {
+                cache: 'no-store',            // never reuse a cached response (a Cache-Control request header is not allowed by GitHub's CORS policy)
                 ...options,
                 headers: {
                     'Authorization': `Bearer ${gh.token}`,
@@ -181,26 +265,95 @@
         }
 
         async function pathExists(path) {
-            try { await api(`/contents/${encodePath(path)}?ref=${encodeURIComponent(gh.branch)}`); return true; }
+            try { await api(`/contents/${encodePath(path)}?ref=${encodeURIComponent(headSha || gh.branch)}&t=${Date.now()}`); return true; }
             catch (err) { if (err.status === 404) return false; throw err; }
         }
 
-        // Writes the image (if any) and both catalog files in ONE commit, so the
-        // site never deploys a product whose image is missing.
-        async function commitChanges(message, products, image) {
-            const ref = await api(`/git/ref/heads/${encodePath(gh.branch)}`);
-            const parentSha = ref.object.sha;
-            const parent = await api(`/git/commits/${parentSha}`);
-            const json = JSON.stringify(products, null, 2) + '\n';
-            const tree = CATALOG_PATHS.map(path => ({ path, mode: '100644', type: 'blob', content: json }));
-            if (image) {
-                const blob = await api('/git/blobs', { method: 'POST', body: JSON.stringify({ content: image.base64, encoding: 'base64' }) });
-                tree.push({ path: image.repoPath, mode: '100644', type: 'blob', sha: blob.sha });
-            }
-            const newTree = await api('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: parent.tree.sha, tree }) });
-            const commit = await api('/git/commits', { method: 'POST', body: JSON.stringify({ message: `${message} via Admin Panel`, tree: newTree.sha, parents: [parentSha] }) });
-            await api(`/git/refs/heads/${encodePath(gh.branch)}`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) });
+        async function fetchProductsAt(sha) {
+            const file = await api(`/contents/products.json?ref=${encodeURIComponent(sha)}&t=${Date.now()}`);
+            const parsed = JSON.parse(base64ToUtf8(file.content));
+            if (!Array.isArray(parsed)) throw new Error('products.json একটি JSON array হতে হবে');
+            return parsed;
         }
+
+        // Runs right before every commit. Reads the newest branch head and, if someone
+        // else has pushed since we last looked, reloads the catalog from it so the
+        // pending change is applied on top of the latest data instead of conflicting.
+        async function syncToLatest() {
+            const remote = (await api(`/git/ref/heads/${encodePath(gh.branch)}?t=${Date.now()}`)).object.sha;
+            if (!headSha) { headSha = remote; return; }
+            if (remote === headSha) return;
+            // GitHub can briefly return the previous head just after one of our own
+            // commits. Compare to tell "stale read" (behind) from "really newer" (ahead).
+            let status = 'ahead';
+            try { status = (await api(`/compare/${headSha}...${remote}`)).status; } catch (_) {}
+            if (status === 'behind' || status === 'identical') return;
+            productsData = await fetchProductsAt(remote);
+            headSha = remote;
+        }
+
+        // All writes go through this queue so two saves can never overlap.
+        let writeQueue = Promise.resolve();
+        function enqueue(task) {
+            const run = writeQueue.then(task);
+            writeQueue = run.catch(() => {});
+            return run;
+        }
+
+        // Applies `mutate` to the latest catalog and writes it, together with any
+        // uploaded images, as ONE commit. On a conflict it re-syncs and retries on its
+        // own, so the admin never has to reload the page.
+        //   mutate(products) -> new products array (may throw to cancel)
+        //   images: [{ base64, repoPath }]
+        function commitChanges(message, mutate, images = []) {
+            return enqueue(async () => {
+                const blobShas = [];
+                let lastError;
+                for (let attempt = 0; attempt < MAX_COMMIT_ATTEMPTS; attempt++) {
+                    try {
+                        await syncToLatest();
+                        const next = mutate(JSON.parse(JSON.stringify(productsData)));
+                        const parent = await api(`/git/commits/${headSha}`);
+                        const json = JSON.stringify(next, null, 2) + '\n';
+                        const tree = CATALOG_PATHS.map(path => ({ path, mode: '100644', type: 'blob', content: json }));
+                        for (let i = 0; i < images.length; i++) {
+                            if (!blobShas[i]) blobShas[i] = (await api('/git/blobs', { method: 'POST', body: JSON.stringify({ content: images[i].base64, encoding: 'base64' }) })).sha;
+                            tree.push({ path: images[i].repoPath, mode: '100644', type: 'blob', sha: blobShas[i] });
+                        }
+                        const newTree = await api('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: parent.tree.sha, tree }) });
+                        const commit = await api('/git/commits', { method: 'POST', body: JSON.stringify({ message: `${message} via Admin Panel`, tree: newTree.sha, parents: [headSha] }) });
+                        await api(`/git/refs/heads/${encodePath(gh.branch)}`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) });
+                        headSha = commit.sha;         // remember our own commit immediately for the next save
+                        productsData = next;
+                        return;
+                    } catch (err) {
+                        lastError = err;
+                        const retryable = err.status === 409 || err.status === 422 || err.status >= 500 || err.status === undefined && err instanceof TypeError;
+                        if (!retryable) throw err;
+                        await sleep(500 * (attempt + 1));
+                    }
+                }
+                throw lastError;
+            }).finally(refreshViews);
+        }
+
+        function saveErrorText(err) {
+            if (err.status === 401) return 'টোকেন ভুল বা মেয়াদ শেষ। আবার লগইন করুন।';
+            if (err.status === 403) return 'এই টোকেনে লেখার অনুমতি নেই অথবা GitHub সাময়িকভাবে সীমা দিয়েছে। (' + err.message + ')';
+            if (err instanceof TypeError) return 'ইন্টারনেট সংযোগে সমস্যা। আবার সেভ চাপুন।';
+            return err.message + ' — আপনার পরিবর্তন এখানে রয়ে গেছে, আবার সেভ চাপুন।';
+        }
+
+        // Disables a button with a loading label; returns a function that restores it.
+        function setBusy(btn, text = SAVING_TEXT) {
+            const label = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = text;
+            return () => { btn.disabled = false; btn.textContent = label; };
+        }
+
+        function showError(node, text) { node.textContent = text; node.classList.remove('hidden'); }
+        function hideError(node) { node.classList.add('hidden'); }
 
         // ---- Login ---------------------------------------------------------
         $('login-form').addEventListener('submit', async e => {
@@ -209,7 +362,7 @@
             gh.repo = $('gh-repo').value.trim();
             gh.token = $('gh-token').value.trim();
             const errorBox = $('login-error');
-            errorBox.classList.add('hidden');
+            hideError(errorBox);
             if (!gh.owner || !gh.repo || !gh.token) return showError(errorBox, 'দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
 
             const btn = $('login-btn');
@@ -218,14 +371,12 @@
                 const repo = await api('');
                 gh.branch = repo.default_branch;
                 if (repo.permissions && !repo.permissions.push) throw new Error('এই টোকেনে রিপোজিটরিতে লেখার (write) অনুমতি নেই');
-                const file = await api(`/contents/products.json?ref=${encodeURIComponent(gh.branch)}`);
-                const parsed = JSON.parse(base64ToUtf8(file.content));
-                if (!Array.isArray(parsed)) throw new Error('products.json একটি JSON array হতে হবে');
-                productsData = parsed;
+                headSha = (await api(`/git/ref/heads/${encodePath(gh.branch)}?t=${Date.now()}`)).object.sha;
+                productsData = await fetchProductsAt(headSha);
                 $('login-sec').classList.add('hidden');
                 $('dashboard-sec').classList.remove('hidden');
-                $('repo-status').innerText = `সংযুক্ত: ${gh.owner}/${gh.repo} (${gh.branch}) · ${productsData.length} টি প্রোডাক্ট`;
-                renderTable();
+                showBulkTab('uniform');
+                refreshViews();
             } catch (err) {
                 const hint = err.status === 401 ? 'টোকেন ভুল বা মেয়াদ শেষ' : err.status === 404 ? 'রিপোজিটরি বা products.json পাওয়া যায়নি' : err.message;
                 showError(errorBox, 'ত্রুটি: ' + hint);
@@ -234,10 +385,17 @@
             }
         });
 
-        function showError(node, text) { node.textContent = text; node.classList.remove('hidden'); }
-
-        // ---- Table ---------------------------------------------------------
+        // ---- Views ---------------------------------------------------------
         function imageSrc(path) { return sessionPreviews[path] || path || ''; }
+
+        // Re-draws everything from memory after a save. Never reloads the page.
+        function refreshViews() {
+            if (!gh.branch) return;
+            $('repo-status').innerText = `সংযুক্ত: ${gh.owner}/${gh.repo} (${gh.branch}) · ${productsData.length} টি প্রোডাক্ট`;
+            renderTable();
+            renderSheet();
+            updateUniformSummary();
+        }
 
         function renderTable() {
             $('product-list-rows').innerHTML = productsData.map((p, index) => `
@@ -249,13 +407,13 @@
                     <td class="p-3 text-slate-400 line-through">${p.originalPrice ? '৳' + escapeHTML(p.originalPrice) : ''}</td>
                     <td class="p-3 text-right whitespace-nowrap">
                         <button onclick="editProd(${index})" class="text-blue-600 font-bold mr-3 text-xs hover:underline">এডিট</button>
-                        <button onclick="deleteProd(${index})" class="text-red-600 font-bold text-xs hover:underline">ডিলিট</button>
+                        <button onclick="deleteProd(${index}, this)" class="text-red-600 font-bold text-xs hover:underline disabled:opacity-50 disabled:no-underline">ডিলিট</button>
                     </td>
                 </tr>
             `).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">কোনো প্রোডাক্ট নেই</td></tr>';
         }
 
-        // ---- Modal ---------------------------------------------------------
+        // ---- Single product modal ------------------------------------------
         function setPreview(src, info) {
             const img = $('p-image-preview');
             img.classList.toggle('hidden', !src);
@@ -267,7 +425,7 @@
         function openModal(title, p) {
             pendingImage = null;
             $('prod-form').reset();
-            $('modal-error').classList.add('hidden');
+            hideError($('modal-error'));
             $('modal-title').innerText = title;
             if (p) {
                 $('p-name').value = p.name || '';
@@ -281,8 +439,8 @@
             $('prod-modal').classList.remove('hidden');
         }
 
-        function openAddModal() { editIndex = null; openModal('নতুন প্রোডাক্ট যোগ করুন', null); }
-        function editProd(idx) { editIndex = idx; openModal('প্রোডাক্ট তথ্য আপডেট করুন', productsData[idx]); }
+        function openAddModal() { editId = null; openModal('নতুন প্রোডাক্ট যোগ করুন', null); }
+        function editProd(idx) { const p = productsData[idx]; if (!p) return; editId = p.id; openModal('প্রোডাক্ট তথ্য আপডেট করুন', p); }
         function closeModal() { $('prod-modal').classList.add('hidden'); pendingImage = null; }
 
         // ---- Image selection, preview and resize ---------------------------
@@ -296,6 +454,8 @@
         // Large phone photos are resized to keep the repository and the page light.
         // SVG and GIF files are uploaded untouched.
         async function prepareImage(file) {
+            if (!file.type.startsWith('image/')) throw new Error('শুধু ছবি (image) ফাইল আপলোড করা যাবে');
+            if (file.size > MAX_UPLOAD_BYTES) throw new Error('ছবিটি অনেক বড় (সর্বোচ্চ 20MB)');
             const original = await readAsDataURL(file);
             const type = file.type.toLowerCase();
             let dataUrl = original;
@@ -318,19 +478,17 @@
                     }
                 } catch (_) { /* keep the original file */ }
             }
-            return { base64: dataUrl.slice(dataUrl.indexOf(',') + 1), ext, baseName: cleanBaseName(file.name), previewUrl: dataUrl };
+            return { base64: dataUrl.slice(dataUrl.indexOf(',') + 1), ext, baseName: cleanBaseName(file.name), previewUrl: dataUrl, fileName: file.name };
         }
 
         $('p-image-file').addEventListener('change', async e => {
             const file = e.target.files[0];
-            $('modal-error').classList.add('hidden');
+            hideError($('modal-error'));
             pendingImage = null;
             if (!file) {
                 const current = $('p-image').value.trim();
                 return setPreview(current ? imageSrc(current) : '', current ? `বর্তমান: ${current}` : '');
             }
-            if (!file.type.startsWith('image/')) { e.target.value = ''; return showError($('modal-error'), 'শুধু ছবি (image) ফাইল আপলোড করা যাবে'); }
-            if (file.size > MAX_UPLOAD_BYTES) { e.target.value = ''; return showError($('modal-error'), 'ছবিটি অনেক বড় (সর্বোচ্চ 20MB)'); }
             try {
                 const prepared = await prepareImage(file);
                 if (e.target.files[0] !== file) return;   // another file was picked meanwhile
@@ -343,86 +501,372 @@
             }
         });
 
-        async function resolveImagePath(image, category, productName) {
-            const folder = CATEGORY_FOLDERS[category];
+        // Picks a free path for an upload. `taken` holds paths already chosen in the same save.
+        async function resolveImagePath(image, category, productName, taken = new Set()) {
+            const folder = CATEGORY_FOLDERS[category] || CATEGORY_FOLDERS['Watches'];
             const base = image.baseName || cleanBaseName(productName) || 'product';
             let filename = `${base}.${image.ext}`;
-            if (await pathExists(`${IMAGE_ROOT}/${folder}/${filename}`)) filename = `${base}-${Date.now()}.${image.ext}`;  // never overwrite another product's photo
+            if (taken.has(`${folder}/${filename}`) || await pathExists(`${IMAGE_ROOT}/${folder}/${filename}`)) {
+                filename = `${base}-${Date.now()}${taken.size}.${image.ext}`;   // never overwrite another product's photo
+            }
+            taken.add(`${folder}/${filename}`);
             return { repoPath: `${IMAGE_ROOT}/${folder}/${filename}`, sitePath: `images/${folder}/${filename}` };
         }
 
-        // ---- Save / delete -------------------------------------------------
+        // ---- Single save / delete ------------------------------------------
         $('prod-form').addEventListener('submit', async e => {
             e.preventDefault();
+            const btn = $('save-btn');
+            if (btn.disabled) return;
             const errorBox = $('modal-error');
-            errorBox.classList.add('hidden');
+            hideError(errorBox);
 
-            const existing = editIndex !== null ? productsData[editIndex] : null;
+            const id = editId;
             const name = $('p-name').value.trim();
             const category = $('p-category').value;
             const price = Number($('p-price').value);
             const originalRaw = $('p-original-price').value.trim();
             const originalPrice = originalRaw === '' ? 0 : Number(originalRaw);
-            const manualPath = $('p-image').value.trim().replace(/^\.?\//, '');
+            const manualPath = cleanPath($('p-image').value);
             const description = $('p-desc').value.trim();
+            const image = pendingImage;
 
             if (!name) return showError(errorBox, 'প্রোডাক্টের নাম দিন');
             if (!Number.isFinite(price) || price <= 0) return showError(errorBox, 'সঠিক বর্তমান মূল্য দিন');
             if (!Number.isFinite(originalPrice) || originalPrice < 0) return showError(errorBox, 'সঠিক আগের মূল্য দিন');
             if (originalPrice && originalPrice <= price) return showError(errorBox, 'আগের (Cut) মূল্য বর্তমান মূল্যের চেয়ে বেশি হতে হবে, অথবা ফাঁকা রাখুন');
-            if (!pendingImage && !manualPath) return showError(errorBox, 'একটি ছবি আপলোড করুন');
+            if (!image && !manualPath) return showError(errorBox, 'একটি ছবি আপলোড করুন');
 
-            const btn = $('save-btn');
-            const label = btn.textContent;
-            btn.disabled = true;
-            btn.textContent = pendingImage ? 'ছবি আপলোড হচ্ছে…' : 'সেভ হচ্ছে…';
+            const restore = setBusy(btn);
             try {
-                let imagePath = manualPath, upload = null;
-                if (pendingImage) {
-                    const target = await resolveImagePath(pendingImage, category, name);
+                let imagePath = manualPath;
+                const uploads = [];
+                if (image) {
+                    const target = await resolveImagePath(image, category, name);
                     imagePath = target.sitePath;
-                    upload = { base64: pendingImage.base64, repoPath: target.repoPath };
+                    uploads.push({ base64: image.base64, repoPath: target.repoPath });
                 }
+                const newId = 'prod_' + Date.now();
 
-                // Keep fields this form does not edit (e.g. variants) when updating.
-                const item = { ...(existing || {}), id: existing ? existing.id : 'prod_' + Date.now(), name, category, price };
-                if (originalPrice) item.originalPrice = originalPrice; else delete item.originalPrice;
-                item.image = imagePath;
-                item.description = description;
-                if (!existing || existing.category !== category) {
-                    if (DEFAULT_VARIANTS[category]) item.variants = DEFAULT_VARIANTS[category]; else delete item.variants;
-                }
+                await commitChanges(`${id === null ? 'Add' : 'Update'} product: ${name}`, products => {
+                    const idx = id === null ? -1 : products.findIndex(p => p.id === id);
+                    if (id !== null && idx < 0) throw new Error('এই প্রোডাক্টটি আর ক্যাটালগে নেই');
+                    const current = idx >= 0 ? products[idx] : null;
+                    // Keep fields this form does not edit (e.g. variants) when updating.
+                    const item = { ...(current || {}), id: current ? current.id : newId, name, category, price };
+                    if (originalPrice) item.originalPrice = originalPrice; else delete item.originalPrice;
+                    item.image = imagePath;
+                    item.description = description;
+                    if (!current || current.category !== category) {
+                        if (DEFAULT_VARIANTS[category]) item.variants = DEFAULT_VARIANTS[category]; else delete item.variants;
+                    }
+                    if (current) products[idx] = item; else products.push(item);
+                    return products;
+                }, uploads);
 
-                const next = productsData.slice();
-                if (existing) next[editIndex] = item; else next.push(item);
-                await commitChanges(`${existing ? 'Update' : 'Add'} product: ${name}`, next, upload);
-
-                if (pendingImage) sessionPreviews[imagePath] = pendingImage.previewUrl;
-                productsData = next;
+                if (image) sessionPreviews[imagePath] = image.previewUrl;
+                if (id !== null) delete sheetDrafts[id];
                 closeModal();
-                renderTable();
-                alert('সফলভাবে গিটহাবে সেভ হয়েছে! কয়েক মিনিটের মধ্যে ওয়েবসাইট আপডেট হয়ে যাবে।');
+                refreshViews();
+                toast('সফলভাবে গিটহাবে সেভ হয়েছে');
             } catch (err) {
-                showError(errorBox, 'গিটহাবে সেভ করতে সমস্যা হয়েছে: ' + err.message + (err.status === 422 || err.status === 409 ? ' — পেজ রিলোড করে আবার চেষ্টা করুন।' : ''));
+                showError(errorBox, 'সেভ করতে সমস্যা হয়েছে: ' + saveErrorText(err));
             } finally {
-                btn.disabled = false;
-                btn.textContent = label;
+                restore();
             }
         });
 
-        async function deleteProd(idx) {
+        async function deleteProd(idx, btn) {
             const p = productsData[idx];
+            if (!p) return;
             // The image file stays in the repository; only the catalog entry is removed.
             if (!confirm(`"${p.name}" ডিলিট করতে চান? (ছবির ফাইলটি রিপোজিটরিতে থেকে যাবে)`)) return;
-            const next = productsData.filter((_, i) => i !== idx);
+            if (btn) setBusy(btn, 'ডিলিট হচ্ছে...');   // the row is re-drawn afterwards, so no restore needed
             try {
-                await commitChanges(`Delete product: ${p.name}`, next, null);
-                productsData = next;
-                renderTable();
+                await commitChanges(`Delete product: ${p.name}`, products => products.filter(x => x.id !== p.id));
+                delete sheetDrafts[p.id];
+                refreshViews();
+                toast('প্রোডাক্ট ডিলিট হয়েছে');
             } catch (err) {
-                alert('ডিলিট করতে সমস্যা হয়েছে: ' + err.message);
+                alert('ডিলিট করতে সমস্যা হয়েছে: ' + saveErrorText(err));
             }
         }
+
+        // ---- Bulk edit: tabs -----------------------------------------------
+        function showBulkTab(tab) {
+            const on = 'px-3 py-2 rounded-lg bg-emerald-600 text-white', off = 'px-3 py-2 rounded-lg text-emerald-800 hover:bg-emerald-50';
+            $('tab-uniform').className = tab === 'uniform' ? on : off;
+            $('tab-sheet').className = tab === 'sheet' ? on : off;
+            $('tab-uniform').setAttribute('aria-selected', tab === 'uniform');
+            $('tab-sheet').setAttribute('aria-selected', tab === 'sheet');
+            $('uniform-form').classList.toggle('hidden', tab !== 'uniform');
+            $('sheet-panel').classList.toggle('hidden', tab !== 'sheet');
+        }
+
+        // ---- Bulk edit, mode A: one price for a whole category --------------
+        function updateUniformSummary() {
+            const n = productsData.filter(p => p.category === $('u-category').value).length;
+            $('u-summary').textContent = `এই ক্যাটাগরিতে ${n} টি প্রোডাক্ট আছে। ফাঁকা রাখা ঘরের মান বদলাবে না।`;
+        }
+        $('u-category').addEventListener('change', updateUniformSummary);
+
+        $('uniform-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = $('u-save');
+            if (btn.disabled) return;
+            const errorBox = $('u-error');
+            hideError(errorBox);
+
+            const category = $('u-category').value;
+            const priceRaw = $('u-price').value.trim(), originalRaw = $('u-original').value.trim();
+            const price = priceRaw === '' ? null : Number(priceRaw);
+            const original = originalRaw === '' ? null : Number(originalRaw);
+
+            if (price === null && original === null) return showError(errorBox, 'অন্তত একটি নতুন মূল্য দিন');
+            if (price !== null && !(Number.isFinite(price) && price > 0)) return showError(errorBox, 'সঠিক বর্তমান মূল্য দিন');
+            if (original !== null && !(Number.isFinite(original) && original > 0)) return showError(errorBox, 'সঠিক আগের মূল্য দিন');
+            if (price !== null && original !== null && original <= price) return showError(errorBox, 'আগের (Cut) মূল্য বর্তমান মূল্যের চেয়ে বেশি হতে হবে');
+
+            const targets = productsData.filter(p => p.category === category);
+            if (!targets.length) return showError(errorBox, 'এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই');
+
+            // With only one field given, the kept value can end up not above/below the new one.
+            const result = p => ({ price: price ?? Number(p.price), original: original ?? (Number(p.originalPrice) || 0) });
+            const clash = targets.filter(p => { const r = result(p); return r.original && r.original <= r.price; });
+            if (clash.length && original !== null) {
+                return showError(errorBox, `${clash.length} টি প্রোডাক্টের বর্তমান মূল্য ৳${original} বা তার বেশি (যেমন: ${clash[0].name})। আগের মূল্য আরও বেশি দিন, অথবা বর্তমান মূল্যও দিন।`);
+            }
+
+            const lines = [`${category} ক্যাটাগরির ${targets.length} টি প্রোডাক্ট আপডেট হবে:`];
+            if (price !== null) lines.push(`• বর্তমান মূল্য → ৳${price}`);
+            if (original !== null) lines.push(`• আগের মূল্য → ৳${original}`);
+            if (clash.length) lines.push(`\n${clash.length} টি প্রোডাক্টের আগের (Cut) মূল্য নতুন দামের সমান বা কম, তাই সেগুলোর আগের মূল্য মুছে যাবে।`);
+            if (!confirm(lines.join('\n'))) return;
+
+            const restore = setBusy(btn);
+            try {
+                let changed = 0;
+                await commitChanges(`Bulk price update: ${category}`, products => {
+                    changed = 0;
+                    for (const p of products) {
+                        if (p.category !== category) continue;
+                        const r = result(p);
+                        p.price = r.price;
+                        if (r.original && r.original > r.price) p.originalPrice = r.original; else delete p.originalPrice;
+                        changed++;
+                    }
+                    return products;
+                });
+                for (const p of productsData) if (p.category === category) delete sheetDrafts[p.id];   // those rows now show the new prices
+                $('u-price').value = '';
+                $('u-original').value = '';
+                refreshViews();
+                toast(`${category}: ${changed} টি প্রোডাক্ট আপডেট হয়েছে`);
+            } catch (err) {
+                showError(errorBox, 'সেভ করতে সমস্যা হয়েছে: ' + saveErrorText(err));
+            } finally {
+                restore();
+            }
+        });
+
+        // ---- Bulk edit, mode B: inline spreadsheet --------------------------
+        const SHEET_INPUT = 'w-full border p-2 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none';
+
+        function sheetValues(p) {
+            const d = sheetDrafts[p.id];
+            return d || { name: p.name || '', price: String(p.price ?? ''), originalPrice: p.originalPrice ? String(p.originalPrice) : '', image: p.image || '', pendingImage: null };
+        }
+
+        function draftChanged(p, d) {
+            return !!d.pendingImage
+                || d.name.trim() !== (p.name || '')
+                || Number(d.price) !== Number(p.price)
+                || (d.originalPrice.trim() === '' ? 0 : Number(d.originalPrice)) !== (Number(p.originalPrice) || 0)
+                || cleanPath(d.image) !== cleanPath(p.image);
+        }
+
+        function renderSheet() {
+            // Drop drafts for products that no longer exist.
+            const ids = new Set(productsData.map(p => String(p.id)));
+            for (const id of Object.keys(sheetDrafts)) if (!ids.has(id)) delete sheetDrafts[id];
+
+            const filter = $('s-category').value;
+            const rows = productsData.filter(p => filter === 'All' || p.category === filter);
+            $('sheet-rows').innerHTML = rows.map(p => {
+                const v = sheetValues(p), id = escapeHTML(p.id), dirty = !!sheetDrafts[p.id];
+                const thumb = v.pendingImage ? v.pendingImage.previewUrl : imageSrc(cleanPath(v.image));
+                return `
+                <tr data-id="${id}" class="${dirty ? 'bg-amber-50' : ''}">
+                    <td class="p-2"><img data-role="thumb" src="${escapeHTML(thumb)}" alt="" loading="lazy" class="w-11 h-11 object-cover rounded-lg border bg-slate-100"></td>
+                    <td class="p-2"><input data-field="name" type="text" maxlength="120" value="${escapeHTML(v.name)}" aria-label="Product Title" class="${SHEET_INPUT}">${filter === 'All' ? `<span class="text-[11px] text-slate-400">${escapeHTML(p.category)}</span>` : ''}</td>
+                    <td class="p-2"><input data-field="price" type="number" min="1" step="1" inputmode="numeric" value="${escapeHTML(v.price)}" aria-label="Present Price" class="${SHEET_INPUT}"></td>
+                    <td class="p-2"><input data-field="originalPrice" type="number" min="0" step="1" inputmode="numeric" value="${escapeHTML(v.originalPrice)}" placeholder="নেই" aria-label="Original Price" class="${SHEET_INPUT}"></td>
+                    <td class="p-2">
+                        <div class="flex gap-2 items-center">
+                            <input data-field="image" type="text" value="${escapeHTML(v.image)}" aria-label="Image path" class="${SHEET_INPUT} text-xs">
+                            <label class="shrink-0 cursor-pointer px-2.5 py-2 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs hover:bg-emerald-100">আপলোড<input data-role="file" type="file" accept="image/*" class="hidden"></label>
+                        </div>
+                        <span data-role="file-info" class="text-[11px] text-emerald-700 break-all">${v.pendingImage ? 'নতুন ছবি: ' + escapeHTML(v.pendingImage.fileName) : ''}</span>
+                    </td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="5" class="p-8 text-center text-slate-400">এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই</td></tr>';
+            updateSheetCount();
+        }
+
+        function updateSheetCount() {
+            const n = Object.keys(sheetDrafts).length;
+            $('s-count').textContent = n ? `${n} টি প্রোডাক্টে পরিবর্তন (সেভ হয়নি)` : 'কোনো পরিবর্তন নেই';
+            $('s-count').className = n ? 'text-amber-700 font-bold' : 'text-slate-500 font-bold';
+            if ($('s-save').textContent !== SAVING_TEXT) { $('s-save').disabled = !n; $('s-reset').disabled = !n; }
+        }
+
+        // Reads a row's inputs into sheetDrafts (or clears the draft when nothing differs).
+        function captureRow(tr, pendingImageOverride) {
+            const p = productsData.find(x => String(x.id) === tr.dataset.id);
+            if (!p) return;
+            const field = name => tr.querySelector(`[data-field="${name}"]`).value;
+            const previous = sheetDrafts[p.id];
+            const draft = {
+                name: field('name'), price: field('price'), originalPrice: field('originalPrice'), image: field('image'),
+                pendingImage: pendingImageOverride !== undefined ? pendingImageOverride : (previous ? previous.pendingImage : null)
+            };
+            if (draftChanged(p, draft)) sheetDrafts[p.id] = draft; else delete sheetDrafts[p.id];
+            tr.classList.toggle('bg-amber-50', !!sheetDrafts[p.id]);
+            updateSheetCount();
+        }
+
+        $('sheet-rows').addEventListener('input', e => {
+            const tr = e.target.closest('tr[data-id]');
+            if (!tr || !e.target.dataset.field) return;
+            hideError($('s-error'));
+            if (e.target.dataset.field === 'image') {
+                // Typing a path replaces a pending upload for that row.
+                tr.querySelector('[data-role="file"]').value = '';
+                tr.querySelector('[data-role="file-info"]').textContent = '';
+                captureRow(tr, null);
+            } else {
+                captureRow(tr);
+            }
+        });
+
+        $('sheet-rows').addEventListener('change', async e => {
+            const tr = e.target.closest('tr[data-id]');
+            if (!tr) return;
+            if (e.target.dataset.field === 'image') {
+                tr.querySelector('[data-role="thumb"]').src = imageSrc(cleanPath(e.target.value));
+                return;
+            }
+            if (e.target.dataset.role !== 'file') return;
+            const file = e.target.files[0];
+            if (!file) return;
+            hideError($('s-error'));
+            try {
+                const prepared = await prepareImage(file);
+                if (!tr.isConnected || e.target.files[0] !== file) return;
+                tr.querySelector('[data-role="thumb"]').src = prepared.previewUrl;
+                tr.querySelector('[data-role="file-info"]').textContent = 'নতুন ছবি: ' + file.name;
+                captureRow(tr, prepared);
+            } catch (err) {
+                e.target.value = '';
+                showError($('s-error'), err.message || 'ছবিটি পড়া যায়নি');
+            }
+        });
+
+        $('s-category').addEventListener('change', renderSheet);
+
+        function resetSheet() {
+            if (!Object.keys(sheetDrafts).length) return;
+            if (!confirm('সেভ না করা সব পরিবর্তন বাতিল করবেন?')) return;
+            sheetDrafts = {};
+            hideError($('s-error'));
+            renderSheet();
+        }
+
+        async function saveSheet() {
+            const btn = $('s-save');
+            if (btn.disabled) return;
+            const errorBox = $('s-error');
+            hideError(errorBox);
+
+            // Snapshot the edits so typing during the save cannot change what is committed.
+            const edits = [];
+            for (const [id, d] of Object.entries(sheetDrafts)) {
+                const p = productsData.find(x => String(x.id) === id);
+                if (!p) continue;
+                const name = d.name.trim();
+                const price = Number(d.price);
+                const original = d.originalPrice.trim() === '' ? 0 : Number(d.originalPrice);
+                const image = cleanPath(d.image);
+                const label = name || p.name;
+                const fail = msg => { focusSheetRow(id); showError(errorBox, `"${label}": ${msg}`); return null; };
+                if (!name) return fail('প্রোডাক্টের নাম ফাঁকা রাখা যাবে না');
+                if (d.price.trim() === '' || !Number.isFinite(price) || price <= 0) return fail('সঠিক বর্তমান মূল্য দিন');
+                if (!Number.isFinite(original) || original < 0) return fail('সঠিক আগের মূল্য দিন');
+                if (original && original <= price) return fail('আগের (Cut) মূল্য বর্তমান মূল্যের চেয়ে বেশি হতে হবে, অথবা ফাঁকা রাখুন');
+                if (!d.pendingImage && !image) return fail('ছবির পাথ দিন অথবা ছবি আপলোড করুন');
+                edits.push({ id, name, price, original, image, pendingImage: d.pendingImage, category: p.category, draft: d });
+            }
+            if (!edits.length) return;
+
+            const restore = setBusy(btn);
+            $('s-reset').disabled = true;
+            try {
+                const uploads = [], taken = new Set();
+                for (const edit of edits) {
+                    if (!edit.pendingImage) continue;
+                    const target = await resolveImagePath(edit.pendingImage, edit.category, edit.name, taken);
+                    edit.image = target.sitePath;
+                    uploads.push({ base64: edit.pendingImage.base64, repoPath: target.repoPath });
+                }
+
+                let saved = 0;
+                await commitChanges(`Bulk edit ${edits.length} product${edits.length === 1 ? '' : 's'}`, products => {
+                    saved = 0;
+                    for (const edit of edits) {
+                        const p = products.find(x => String(x.id) === edit.id);
+                        if (!p) continue;      // deleted elsewhere in the meantime
+                        p.name = edit.name;
+                        p.price = edit.price;
+                        if (edit.original) p.originalPrice = edit.original; else delete p.originalPrice;
+                        p.image = edit.image;
+                        saved++;
+                    }
+                    return products;
+                }, uploads);
+
+                for (const edit of edits) {
+                    if (edit.pendingImage) sessionPreviews[edit.image] = edit.pendingImage.previewUrl;
+                    if (sheetDrafts[edit.id] === edit.draft) delete sheetDrafts[edit.id];   // keep anything typed during the save
+                }
+                refreshViews();
+                toast(`${saved} টি প্রোডাক্ট একসাথে সেভ হয়েছে`);
+            } catch (err) {
+                showError(errorBox, 'সেভ করতে সমস্যা হয়েছে: ' + saveErrorText(err));
+            } finally {
+                restore();
+                updateSheetCount();
+            }
+        }
+
+        function focusSheetRow(id) {
+            const p = productsData.find(x => String(x.id) === id);
+            const select = $('s-category');
+            if (p && select.value !== 'All' && select.value !== p.category) { select.value = 'All'; renderSheet(); }
+            const tr = [...$('sheet-rows').querySelectorAll('tr[data-id]')].find(r => r.dataset.id === id);
+            if (tr) { tr.scrollIntoView({ block: 'center', behavior: 'smooth' }); tr.querySelector('[data-field="name"]').focus({ preventScroll: true }); }
+        }
+
+        // ---- Misc ----------------------------------------------------------
+        function toast(text) {
+            const node = $('toast');
+            node.textContent = text;
+            node.classList.remove('hidden');
+            clearTimeout(toast.timer);
+            toast.timer = setTimeout(() => node.classList.add('hidden'), 3500);
+        }
+
+        // Warn before closing the tab with unsaved spreadsheet edits.
+        window.addEventListener('beforeunload', e => { if (Object.keys(sheetDrafts).length) { e.preventDefault(); e.returnValue = ''; } });
     </script>
 </body>
 </html>
