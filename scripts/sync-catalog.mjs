@@ -1,5 +1,8 @@
 import { copyFileSync, mkdirSync } from 'node:fs';
 
+// Root files are the source of truth; public/ holds the copies Vite ships as-is.
 mkdirSync('public', { recursive: true });
-copyFileSync('products.json', 'public/products.json');
-console.log('Synced products.json into the Vite public assets.');
+for (const file of ['products.json', 'admin.html']) {
+  copyFileSync(file, `public/${file}`);
+}
+console.log('Synced products.json and admin.html into the Vite public assets.');

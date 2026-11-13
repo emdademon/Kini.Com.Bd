@@ -3,52 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Kini.Com.Bd - Admin Panel</title>
+    <link rel="icon" href="./images/kini.com.jpg" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
 </head>
 <body class="bg-slate-100 text-slate-800 p-4 sm:p-8">
 
-    <!-- Login / Token Modal -->
+    <!-- Login / Token -->
     <div id="login-sec" class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg border border-slate-200 mt-10">
-        <h2 class="text-xl font-bold text-slate-900 mb-1">GitHub Admin Login</h2>
-        <p class="text-xs text-slate-500 mb-4">গিটহাবের Personal Access Token দিয়ে লগইন করুন</p>
-        <div class="space-y-3">
+        <div class="flex items-center gap-3 mb-4">
+            <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Kini.Com.Bd logo" class="w-12 h-12 rounded-xl object-cover border">
             <div>
-                <label class="text-xs font-bold text-slate-700">GitHub Username</label>
-                <input type="text" id="gh-owner" placeholder="e.g. emdademon" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <h2 class="text-xl font-bold text-slate-900 leading-tight">GitHub Admin Login</h2>
+                <p class="text-xs text-slate-500">গিটহাবের Personal Access Token দিয়ে লগইন করুন</p>
             </div>
-            <div>
-                <label class="text-xs font-bold text-slate-700">Repository Name</label>
-                <input type="text" id="gh-repo" placeholder="e.g. Kini.Com.Bd" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-slate-700">Personal Access Token (PAT)</label>
-                <input type="password" id="gh-token" placeholder="github_pat_xxxxxxxx" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-            </div>
-            <button onclick="loadRepoProducts()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">লগইন & প্রোডাক্ট লোড করুন</button>
         </div>
+        <form id="login-form" class="space-y-3">
+            <div>
+                <label for="gh-owner" class="text-xs font-bold text-slate-700">GitHub Username</label>
+                <input type="text" id="gh-owner" value="emdademon" autocomplete="username" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+                <label for="gh-repo" class="text-xs font-bold text-slate-700">Repository Name</label>
+                <input type="text" id="gh-repo" value="Kini.Com.Bd" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+                <label for="gh-token" class="text-xs font-bold text-slate-700">Personal Access Token (PAT)</label>
+                <input type="password" id="gh-token" placeholder="github_pat_xxxxxxxx" autocomplete="current-password" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <p class="text-[11px] text-slate-500 mt-1">টোকেনে এই রিপোজিটরির <b>Contents: Read and write</b> পারমিশন লাগবে। টোকেন শুধু এই ব্রাউজার ট্যাবে থাকে, কোথাও সেভ হয় না।</p>
+            </div>
+            <button type="submit" id="login-btn" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition disabled:opacity-60">লগইন & প্রোডাক্ট লোড করুন</button>
+            <p id="login-error" class="hidden text-xs text-red-600 font-bold"></p>
+        </form>
     </div>
 
-    <!-- Admin Dashboard Section -->
+    <!-- Dashboard -->
     <div id="dashboard-sec" class="hidden max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200 gap-4">
-            <div>
-                <h1 class="text-xl font-black text-slate-900">Kini.Com.Bd প্রোডাক্ট ম্যানেজমেন্ট</h1>
-                <p class="text-xs text-slate-500 mt-0.5" id="repo-status">সংযুক্ত রিপোজিটরি</p>
+            <div class="flex items-center gap-3">
+                <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Kini.Com.Bd logo" class="w-11 h-11 rounded-xl object-cover border">
+                <div>
+                    <h1 class="text-xl font-black text-slate-900">Kini.Com.Bd প্রোডাক্ট ম্যানেজমেন্ট</h1>
+                    <p class="text-xs text-slate-500 mt-0.5" id="repo-status">সংযুক্ত রিপোজিটরি</p>
+                </div>
             </div>
-            <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md">+ নতুন প্রোডাক্ট যোগ করুন</button>
+            <div class="flex gap-2">
+                <a href="./index.html" class="border text-slate-600 font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-50">স্টোর দেখুন</a>
+                <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md">+ নতুন প্রোডাক্ট যোগ করুন</button>
+            </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-slate-50 text-slate-500 font-bold border-b text-xs uppercase">
                     <tr>
                         <th class="p-4">ছবি</th>
                         <th class="p-4">নাম</th>
                         <th class="p-4">ক্যাটাগরি</th>
-                        <th class="p-4">মূল্য (৳)</th>
+                        <th class="p-4">বর্তমান মূল্য</th>
+                        <th class="p-4">আগের মূল্য</th>
                         <th class="p-4 text-right">অ্যাকশন</th>
                     </tr>
                 </thead>
@@ -57,167 +73,355 @@
         </div>
     </div>
 
-    <!-- Modal Form (Add/Edit Product) -->
+    <!-- Add / Edit Product Modal -->
     <div id="prod-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+        <form id="prod-form" class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
             <h3 class="text-lg font-bold text-slate-900" id="modal-title">প্রোডাক্ট তথ্য দিন</h3>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="font-bold text-slate-700">প্রোডাক্টের নাম</label>
-                    <input type="text" id="p-name" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <label for="p-name" class="font-bold text-slate-700">Product Title (প্রোডাক্টের নাম)</label>
+                    <input type="text" id="p-name" required maxlength="120" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label for="p-category" class="font-bold text-slate-700">Category (ক্যাটাগরি)</label>
+                    <select id="p-category" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <option value="Watches">Watches (ঘড়ি)</option>
+                        <option value="Jerseys">Jerseys (জার্সি)</option>
+                        <option value="T-Shirts">T-Shirts (টি-শার্ট)</option>
+                        <option value="Wall Canvas">Wall Canvas (ক্যানভাস)</option>
+                    </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="font-bold text-slate-700">ক্যাটাগরি</label>
-                        <select id="p-category" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <option value="Watches">Watches (ঘড়ি)</option>
-                            <option value="Jerseys">Jerseys (জার্সি)</option>
-                            <option value="T-Shirts">T-Shirts (টি-শার্ট)</option>
-                            <option value="Wall Canvas">Wall Canvas (ক্যানভাস)</option>
-                        </select>
+                        <label for="p-price" class="font-bold text-slate-700">Present Price (বর্তমান মূল্য ৳)</label>
+                        <input type="number" id="p-price" required min="1" step="1" inputmode="numeric" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700">মূল্য (৳)</label>
-                        <input type="number" id="p-price" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label for="p-original-price" class="font-bold text-slate-700">Original / Cut Price (আগের মূল্য ৳)</label>
+                        <input type="number" id="p-original-price" min="0" step="1" inputmode="numeric" placeholder="ঐচ্ছিক" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="font-bold text-slate-700">ইমেজ ইউআরএল / পাথ (যেমন: images/watch-blue.jpg)</label>
-                    <input type="text" id="p-image" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <label for="p-image-file" class="font-bold text-slate-700">Product Image (ছবি আপলোড)</label>
+                    <div class="mt-1 flex gap-3 items-start">
+                        <div class="w-24 h-24 shrink-0 rounded-xl border bg-slate-50 overflow-hidden flex items-center justify-center text-slate-400 text-[11px] text-center">
+                            <img id="p-image-preview" alt="Image preview" class="hidden w-full h-full object-cover">
+                            <span id="p-image-empty">ছবি নেই</span>
+                        </div>
+                        <div class="flex-1 min-w-0 space-y-1.5">
+                            <input type="file" id="p-image-file" accept="image/*" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 file:font-bold hover:file:bg-emerald-100">
+                            <p id="p-image-info" class="text-[11px] text-slate-500 break-all"></p>
+                        </div>
+                    </div>
+                    <details class="mt-2">
+                        <summary class="cursor-pointer text-[11px] text-slate-500">অথবা আগে থেকে থাকা ছবির পাথ দিন</summary>
+                        <input type="text" id="p-image" placeholder="images/Watches/watch-blue.jpg" class="mt-1 w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </details>
                 </div>
                 <div>
-                    <label class="font-bold text-slate-700">বিবরণ / সাইজ অপশন</label>
+                    <label for="p-desc" class="font-bold text-slate-700">Description (বিবরণ)</label>
                     <textarea id="p-desc" rows="3" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
                 </div>
+                <p id="modal-error" class="hidden text-red-600 font-bold"></p>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <button onclick="closeModal()" class="px-4 py-2 border rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50">বাতিল</button>
-                <button onclick="saveProduct()" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-md">গিটহাবে সেভ করুন</button>
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50">বাতিল</button>
+                <button type="submit" id="save-btn" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-md disabled:opacity-60">গিটহাবে সেভ করুন</button>
             </div>
-        </div>
+        </form>
     </div>
 
     <script>
-        let ghConfig = { owner: '', repo: '', token: '', sha: '' };
+        // ---- Configuration -------------------------------------------------
+        // Storefront category -> folder inside public/images/
+        const CATEGORY_FOLDERS = { 'Watches': 'Watches', 'Jerseys': 'Jersey', 'T-Shirts': 'T-Shirt', 'Wall Canvas': 'Wall Canvas' };
+        // Options the storefront shows for a new product of each category.
+        const DEFAULT_VARIANTS = {
+            'Jerseys': { sizes: ['M', 'L', 'XL', 'XXL'] },
+            'T-Shirts': { sizes: ['S', 'M', 'L', 'XL', 'XXL'], fabric: '100% Premium Cotton' },
+            'Wall Canvas': { dimensions: ['12x18"', '16x24"', '24x36"'], frames: ['Black', 'Natural Wood', 'White'] }
+        };
+        // products.json is the source; public/products.json is the copy the site serves.
+        const CATALOG_PATHS = ['products.json', 'public/products.json'];
+        const IMAGE_ROOT = 'public/images';
+        const MAX_IMAGE_EDGE = 1600;          // px, longer side after resize
+        const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+
+        let gh = { owner: '', repo: '', token: '', branch: '' };
         let productsData = [];
         let editIndex = null;
+        let pendingImage = null;              // { base64, ext, baseName, previewUrl }
+        const sessionPreviews = {};           // image path -> data URL for images uploaded this session
 
-        function loadRepoProducts() {
-            ghConfig.owner = document.getElementById('gh-owner').value.trim();
-            ghConfig.repo = document.getElementById('gh-repo').value.trim();
-            ghConfig.token = document.getElementById('gh-token').value.trim();
+        const $ = id => document.getElementById(id);
+        const escapeHTML = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const encodePath = p => p.split('/').map(encodeURIComponent).join('/');
+        const utf8ToBase64 = s => { const b = new TextEncoder().encode(s); let bin = ''; for (let i = 0; i < b.length; i += 0x8000) bin += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(bin); };
+        const base64ToUtf8 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
 
-            if (!ghConfig.owner || !ghConfig.repo || !ghConfig.token) {
-                alert('দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
-                return;
+        // ---- GitHub API ----------------------------------------------------
+        async function api(path, options = {}) {
+            const res = await fetch(`https://api.github.com/repos/${encodeURIComponent(gh.owner)}/${encodeURIComponent(gh.repo)}${path}`, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${gh.token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'X-GitHub-Api-Version': '2022-11-28',
+                    ...(options.body ? { 'Content-Type': 'application/json' } : {})
+                }
+            });
+            if (!res.ok) {
+                let detail = '';
+                try { detail = (await res.json()).message || ''; } catch (_) {}
+                const err = new Error(`GitHub ${res.status}${detail ? ': ' + detail : ''}`);
+                err.status = res.status;
+                throw err;
             }
-
-            fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/products.json`, {
-                headers: { 'Authorization': `token ${ghConfig.token}` }
-            })
-            .then(res => {
-                if(!res.ok) throw new Error('products.json ফাইল পাওয়া যায়নি বা টোকেন ভুল');
-                return res.json();
-            })
-            .then(data => {
-                ghConfig.sha = data.sha;
-                const content = decodeURIComponent(escape(atob(data.content)));
-                productsData = JSON.parse(content);
-                document.getElementById('login-sec').classList.add('hidden');
-                document.getElementById('dashboard-sec').classList.remove('hidden');
-                document.getElementById('repo-status').innerText = `সংযুক্ত: ${ghConfig.owner}/${ghConfig.repo}`;
-                renderTable();
-            })
-            .catch(err => alert('ত্রুটি: ' + err.message));
+            return res.status === 204 ? null : res.json();
         }
 
+        async function pathExists(path) {
+            try { await api(`/contents/${encodePath(path)}?ref=${encodeURIComponent(gh.branch)}`); return true; }
+            catch (err) { if (err.status === 404) return false; throw err; }
+        }
+
+        // Writes the image (if any) and both catalog files in ONE commit, so the
+        // site never deploys a product whose image is missing.
+        async function commitChanges(message, products, image) {
+            const ref = await api(`/git/ref/heads/${encodePath(gh.branch)}`);
+            const parentSha = ref.object.sha;
+            const parent = await api(`/git/commits/${parentSha}`);
+            const json = JSON.stringify(products, null, 2) + '\n';
+            const tree = CATALOG_PATHS.map(path => ({ path, mode: '100644', type: 'blob', content: json }));
+            if (image) {
+                const blob = await api('/git/blobs', { method: 'POST', body: JSON.stringify({ content: image.base64, encoding: 'base64' }) });
+                tree.push({ path: image.repoPath, mode: '100644', type: 'blob', sha: blob.sha });
+            }
+            const newTree = await api('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: parent.tree.sha, tree }) });
+            const commit = await api('/git/commits', { method: 'POST', body: JSON.stringify({ message: `${message} via Admin Panel`, tree: newTree.sha, parents: [parentSha] }) });
+            await api(`/git/refs/heads/${encodePath(gh.branch)}`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) });
+        }
+
+        // ---- Login ---------------------------------------------------------
+        $('login-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            gh.owner = $('gh-owner').value.trim();
+            gh.repo = $('gh-repo').value.trim();
+            gh.token = $('gh-token').value.trim();
+            const errorBox = $('login-error');
+            errorBox.classList.add('hidden');
+            if (!gh.owner || !gh.repo || !gh.token) return showError(errorBox, 'দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
+
+            const btn = $('login-btn');
+            btn.disabled = true;
+            try {
+                const repo = await api('');
+                gh.branch = repo.default_branch;
+                if (repo.permissions && !repo.permissions.push) throw new Error('এই টোকেনে রিপোজিটরিতে লেখার (write) অনুমতি নেই');
+                const file = await api(`/contents/products.json?ref=${encodeURIComponent(gh.branch)}`);
+                const parsed = JSON.parse(base64ToUtf8(file.content));
+                if (!Array.isArray(parsed)) throw new Error('products.json একটি JSON array হতে হবে');
+                productsData = parsed;
+                $('login-sec').classList.add('hidden');
+                $('dashboard-sec').classList.remove('hidden');
+                $('repo-status').innerText = `সংযুক্ত: ${gh.owner}/${gh.repo} (${gh.branch}) · ${productsData.length} টি প্রোডাক্ট`;
+                renderTable();
+            } catch (err) {
+                const hint = err.status === 401 ? 'টোকেন ভুল বা মেয়াদ শেষ' : err.status === 404 ? 'রিপোজিটরি বা products.json পাওয়া যায়নি' : err.message;
+                showError(errorBox, 'ত্রুটি: ' + hint);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        function showError(node, text) { node.textContent = text; node.classList.remove('hidden'); }
+
+        // ---- Table ---------------------------------------------------------
+        function imageSrc(path) { return sessionPreviews[path] || path || ''; }
+
         function renderTable() {
-            const tbody = document.getElementById('product-list-rows');
-            tbody.innerHTML = productsData.map((p, index) => `
+            $('product-list-rows').innerHTML = productsData.map((p, index) => `
                 <tr class="hover:bg-slate-50">
-                    <td class="p-3"><img src="${p.image}" class="w-10 h-10 object-cover rounded-lg border"></td>
-                    <td class="p-3 font-bold text-slate-800">${p.name}</td>
-                    <td class="p-3"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full text-xs font-bold">${p.category}</span></td>
-                    <td class="p-3 font-black text-slate-900">৳${p.price}</td>
-                    <td class="p-3 text-right">
+                    <td class="p-3"><img src="${escapeHTML(imageSrc(p.image))}" alt="" loading="lazy" class="w-12 h-12 object-cover rounded-lg border bg-slate-100"></td>
+                    <td class="p-3 font-bold text-slate-800">${escapeHTML(p.name)}</td>
+                    <td class="p-3"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap">${escapeHTML(p.category)}</span></td>
+                    <td class="p-3 font-black text-slate-900">৳${escapeHTML(p.price)}</td>
+                    <td class="p-3 text-slate-400 line-through">${p.originalPrice ? '৳' + escapeHTML(p.originalPrice) : ''}</td>
+                    <td class="p-3 text-right whitespace-nowrap">
                         <button onclick="editProd(${index})" class="text-blue-600 font-bold mr-3 text-xs hover:underline">এডিট</button>
                         <button onclick="deleteProd(${index})" class="text-red-600 font-bold text-xs hover:underline">ডিলিট</button>
                     </td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">কোনো প্রোডাক্ট নেই</td></tr>';
         }
 
-        function openAddModal() {
-            editIndex = null;
-            document.getElementById('modal-title').innerText = "নতুন প্রোডাক্ট যোগ করুন";
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-image').value = '';
-            document.getElementById('p-desc').value = '';
-            document.getElementById('prod-modal').classList.remove('hidden');
+        // ---- Modal ---------------------------------------------------------
+        function setPreview(src, info) {
+            const img = $('p-image-preview');
+            img.classList.toggle('hidden', !src);
+            $('p-image-empty').classList.toggle('hidden', !!src);
+            if (src) img.src = src; else img.removeAttribute('src');
+            $('p-image-info').textContent = info || '';
         }
 
-        function editProd(idx) {
-            editIndex = idx;
-            const p = productsData[idx];
-            document.getElementById('modal-title').innerText = "প্রোডাক্ট তথ্য আপডেট করুন";
-            document.getElementById('p-name').value = p.name;
-            document.getElementById('p-category').value = p.category;
-            document.getElementById('p-price').value = p.price;
-            document.getElementById('p-image').value = p.image;
-            document.getElementById('p-desc').value = p.description || '';
-            document.getElementById('prod-modal').classList.remove('hidden');
-        }
-
-        function closeModal() { document.getElementById('prod-modal').classList.add('hidden'); }
-
-        function deleteProd(idx) {
-            if (confirm('আপনি কি নিশ্চিত যে এই প্রোডাক্টটি ডিলিট করতে চান?')) {
-                productsData.splice(idx, 1);
-                commitToGitHub('Delete product');
+        function openModal(title, p) {
+            pendingImage = null;
+            $('prod-form').reset();
+            $('modal-error').classList.add('hidden');
+            $('modal-title').innerText = title;
+            if (p) {
+                $('p-name').value = p.name || '';
+                $('p-category').value = CATEGORY_FOLDERS[p.category] ? p.category : 'Watches';
+                $('p-price').value = p.price ?? '';
+                $('p-original-price').value = p.originalPrice || '';
+                $('p-image').value = p.image || '';
+                $('p-desc').value = p.description || '';
             }
+            setPreview(p && p.image ? imageSrc(p.image) : '', p && p.image ? `বর্তমান: ${p.image}` : '');
+            $('prod-modal').classList.remove('hidden');
         }
 
-        function saveProduct() {
-            const priceVal = parseFloat(document.getElementById('p-price').value) || 0;
-            const item = {
-                id: editIndex !== null ? productsData[editIndex].id : 'prod_' + Date.now(),
-                name: document.getElementById('p-name').value.trim(),
-                category: document.getElementById('p-category').value,
-                price: priceVal,
-                originalPrice: priceVal + 400,
-                image: document.getElementById('p-image').value.trim(),
-                description: document.getElementById('p-desc').value.trim()
-            };
+        function openAddModal() { editIndex = null; openModal('নতুন প্রোডাক্ট যোগ করুন', null); }
+        function editProd(idx) { editIndex = idx; openModal('প্রোডাক্ট তথ্য আপডেট করুন', productsData[idx]); }
+        function closeModal() { $('prod-modal').classList.add('hidden'); pendingImage = null; }
 
-            if (editIndex !== null) productsData[editIndex] = item;
-            else productsData.push(item);
+        // ---- Image selection, preview and resize ---------------------------
+        const readAsDataURL = blob => new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.onerror = () => reject(r.error); r.readAsDataURL(blob); });
+        const loadImage = src => new Promise((resolve, reject) => { const i = new Image(); i.onload = () => resolve(i); i.onerror = () => reject(new Error('ছবিটি পড়া যায়নি')); i.src = src; });
 
-            commitToGitHub(editIndex !== null ? 'Update product info' : 'Add new product');
+        function cleanBaseName(name) {
+            return name.replace(/\.[^.]+$/, '').normalize('NFKD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase().slice(0, 60);
         }
 
-        function commitToGitHub(message) {
-            const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(productsData, null, 2))));
-            fetch(`https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/products.json`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${ghConfig.token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: message + ' via Admin Panel',
-                    content: updatedContent,
-                    sha: ghConfig.sha
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                ghConfig.sha = data.content.sha;
+        // Large phone photos are resized to keep the repository and the page light.
+        // SVG and GIF files are uploaded untouched.
+        async function prepareImage(file) {
+            const original = await readAsDataURL(file);
+            const type = file.type.toLowerCase();
+            let dataUrl = original;
+            let ext = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/avif': 'avif' })[type]
+                || (file.name.match(/\.([A-Za-z0-9]+)$/) || [, 'jpg'])[1].toLowerCase();
+            if (!['image/svg+xml', 'image/gif'].includes(type)) {
+                try {
+                    const img = await loadImage(original);
+                    const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+                    if (scale < 1 || file.size > 400 * 1024 || !['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(img.naturalWidth * scale);
+                        canvas.height = Math.round(img.naturalHeight * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const resized = canvas.toDataURL('image/jpeg', 0.85);
+                        if (resized.startsWith('data:image/jpeg') && (resized.length < original.length || scale < 1 || ext === 'avif')) { dataUrl = resized; ext = 'jpg'; }
+                    }
+                } catch (_) { /* keep the original file */ }
+            }
+            return { base64: dataUrl.slice(dataUrl.indexOf(',') + 1), ext, baseName: cleanBaseName(file.name), previewUrl: dataUrl };
+        }
+
+        $('p-image-file').addEventListener('change', async e => {
+            const file = e.target.files[0];
+            $('modal-error').classList.add('hidden');
+            pendingImage = null;
+            if (!file) {
+                const current = $('p-image').value.trim();
+                return setPreview(current ? imageSrc(current) : '', current ? `বর্তমান: ${current}` : '');
+            }
+            if (!file.type.startsWith('image/')) { e.target.value = ''; return showError($('modal-error'), 'শুধু ছবি (image) ফাইল আপলোড করা যাবে'); }
+            if (file.size > MAX_UPLOAD_BYTES) { e.target.value = ''; return showError($('modal-error'), 'ছবিটি অনেক বড় (সর্বোচ্চ 20MB)'); }
+            try {
+                const prepared = await prepareImage(file);
+                if (e.target.files[0] !== file) return;   // another file was picked meanwhile
+                pendingImage = prepared;
+                const kb = Math.round(prepared.base64.length * 0.75 / 1024);
+                setPreview(prepared.previewUrl, `নতুন ছবি: ${file.name} · ${kb} KB · সেভ করলে আপলোড হবে`);
+            } catch (err) {
+                e.target.value = '';
+                showError($('modal-error'), err.message || 'ছবিটি পড়া যায়নি');
+            }
+        });
+
+        async function resolveImagePath(image, category, productName) {
+            const folder = CATEGORY_FOLDERS[category];
+            const base = image.baseName || cleanBaseName(productName) || 'product';
+            let filename = `${base}.${image.ext}`;
+            if (await pathExists(`${IMAGE_ROOT}/${folder}/${filename}`)) filename = `${base}-${Date.now()}.${image.ext}`;  // never overwrite another product's photo
+            return { repoPath: `${IMAGE_ROOT}/${folder}/${filename}`, sitePath: `images/${folder}/${filename}` };
+        }
+
+        // ---- Save / delete -------------------------------------------------
+        $('prod-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const errorBox = $('modal-error');
+            errorBox.classList.add('hidden');
+
+            const existing = editIndex !== null ? productsData[editIndex] : null;
+            const name = $('p-name').value.trim();
+            const category = $('p-category').value;
+            const price = Number($('p-price').value);
+            const originalRaw = $('p-original-price').value.trim();
+            const originalPrice = originalRaw === '' ? 0 : Number(originalRaw);
+            const manualPath = $('p-image').value.trim().replace(/^\.?\//, '');
+            const description = $('p-desc').value.trim();
+
+            if (!name) return showError(errorBox, 'প্রোডাক্টের নাম দিন');
+            if (!Number.isFinite(price) || price <= 0) return showError(errorBox, 'সঠিক বর্তমান মূল্য দিন');
+            if (!Number.isFinite(originalPrice) || originalPrice < 0) return showError(errorBox, 'সঠিক আগের মূল্য দিন');
+            if (originalPrice && originalPrice <= price) return showError(errorBox, 'আগের (Cut) মূল্য বর্তমান মূল্যের চেয়ে বেশি হতে হবে, অথবা ফাঁকা রাখুন');
+            if (!pendingImage && !manualPath) return showError(errorBox, 'একটি ছবি আপলোড করুন');
+
+            const btn = $('save-btn');
+            const label = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = pendingImage ? 'ছবি আপলোড হচ্ছে…' : 'সেভ হচ্ছে…';
+            try {
+                let imagePath = manualPath, upload = null;
+                if (pendingImage) {
+                    const target = await resolveImagePath(pendingImage, category, name);
+                    imagePath = target.sitePath;
+                    upload = { base64: pendingImage.base64, repoPath: target.repoPath };
+                }
+
+                // Keep fields this form does not edit (e.g. variants) when updating.
+                const item = { ...(existing || {}), id: existing ? existing.id : 'prod_' + Date.now(), name, category, price };
+                if (originalPrice) item.originalPrice = originalPrice; else delete item.originalPrice;
+                item.image = imagePath;
+                item.description = description;
+                if (!existing || existing.category !== category) {
+                    if (DEFAULT_VARIANTS[category]) item.variants = DEFAULT_VARIANTS[category]; else delete item.variants;
+                }
+
+                const next = productsData.slice();
+                if (existing) next[editIndex] = item; else next.push(item);
+                await commitChanges(`${existing ? 'Update' : 'Add'} product: ${name}`, next, upload);
+
+                if (pendingImage) sessionPreviews[imagePath] = pendingImage.previewUrl;
+                productsData = next;
                 closeModal();
                 renderTable();
-                alert('সফলভাবে গিটহাবে সেভ হয়েছে! Vercel ওয়েবসাইট লাইভ আপডেট করে দেবে।');
-            })
-            .catch(err => alert('গিটহাবে সেভ করতে সমস্যা হয়েছে: ' + err.message));
+                alert('সফলভাবে গিটহাবে সেভ হয়েছে! কয়েক মিনিটের মধ্যে ওয়েবসাইট আপডেট হয়ে যাবে।');
+            } catch (err) {
+                showError(errorBox, 'গিটহাবে সেভ করতে সমস্যা হয়েছে: ' + err.message + (err.status === 422 || err.status === 409 ? ' — পেজ রিলোড করে আবার চেষ্টা করুন।' : ''));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = label;
+            }
+        });
+
+        async function deleteProd(idx) {
+            const p = productsData[idx];
+            // The image file stays in the repository; only the catalog entry is removed.
+            if (!confirm(`"${p.name}" ডিলিট করতে চান? (ছবির ফাইলটি রিপোজিটরিতে থেকে যাবে)`)) return;
+            const next = productsData.filter((_, i) => i !== idx);
+            try {
+                await commitChanges(`Delete product: ${p.name}`, next, null);
+                productsData = next;
+                renderTable();
+            } catch (err) {
+                alert('ডিলিট করতে সমস্যা হয়েছে: ' + err.message);
+            }
         }
     </script>
 </body>

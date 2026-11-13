@@ -41,7 +41,11 @@ Vite serves the storefront on port 5173. `npm run build` synchronizes the root `
 {"dimensions":["12x18\"","16x24\"","24x36\""],"frames":["Black","Natural Wood","White"]}
 ```
 
-Images are under `images/Watches/`, `images/Jersey/`, and `images/Products/`. Keep `public/images/` synchronized when adding or replacing assets. The admin page writes the catalog to the repository's root `products.json`.
+Product photos live in `public/images/<folder>/` (`Watches`, `Jersey`, `T-Shirt`, `Wall Canvas`) and are referenced from the catalog as `images/<folder>/<filename>`.
+
+## Admin Portal
+
+`admin.html` (copied to `public/admin.html` at build time) manages the catalog through the GitHub API using a Personal Access Token with **Contents: Read and write** on this repository. The Add/Edit form covers title, category, present price, original/cut price, image upload with preview, and description. Saving makes a single commit to the default branch containing the uploaded photo (`public/images/<folder>/<filename>`) plus `products.json` and `public/products.json`. Deleting a product removes only its catalog entry; the image file is kept.
 
 ## Payment policy
 

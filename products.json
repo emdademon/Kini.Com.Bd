@@ -5,34 +5,352 @@
     "category": "Watches",
     "price": 1850,
     "originalPrice": 2500,
-    "image": "images/watch-blue.jpg",
-    "description": "Premium water-resistant luxury watch."
+    "image": "images/Watches/watch-blue.jpg",
+    "description": "Poedagar royal blue dial with polished steel bracelet."
+  },
+  {
+    "id": "w2",
+    "name": "Success Way Octagon Gold & Brown Dial Watch",
+    "category": "Watches",
+    "price": 2100,
+    "originalPrice": 2900,
+    "image": "images/Watches/watch-gold.jpg",
+    "description": "Octagonal gold-tone case and textured brown dial."
+  },
+  {
+    "id": "w3",
+    "name": "Success Way Emerald Green Dial Watch",
+    "category": "Watches",
+    "price": 1950,
+    "originalPrice": 2700,
+    "image": "images/Watches/watch-green.jpg",
+    "description": "Emerald green dial and silver-tone bracelet."
+  },
+  {
+    "id": "w4",
+    "name": "Lumen Silver Minimal Dial Watch",
+    "category": "Watches",
+    "price": 2250,
+    "originalPrice": 3200,
+    "image": "images/Watches/watch-lumen.jpg",
+    "description": "Minimal silver Lumen watch with stainless-steel bracelet."
+  },
+  {
+    "id": "w5",
+    "name": "Poedagar Fluted Two-Tone Gold Watch",
+    "category": "Watches",
+    "price": 2400,
+    "originalPrice": 3400,
+    "image": "images/Watches/watch-poedagar-gold.jpg",
+    "description": "Two-tone bracelet, champagne dial and fluted bezel."
+  },
+  {
+    "id": "w6",
+    "name": "Datejust-Style Black Dial Gold Watch",
+    "category": "Watches",
+    "price": 2650,
+    "originalPrice": 3800,
+    "image": "images/Watches/watch-rolex-gold.jpg",
+    "description": "Black dial and gold-tone fluted bezel style."
+  },
+  {
+    "id": "w7",
+    "name": "Success Way Navy Honeycomb Watch",
+    "category": "Watches",
+    "price": 2100,
+    "originalPrice": 2950,
+    "image": "images/Watches/watch-successway-green.jpg",
+    "description": "Navy honeycomb dial with polished bracelet."
   },
   {
     "id": "j1",
-    "name": "Portugal Special Edition Black Jersey Kit",
+    "name": "Portugal Special Edition Black Jersey",
     "category": "Jerseys",
     "price": 1150,
     "originalPrice": 1600,
-    "image": "images/jersey-portugal.jpg",
-    "description": "Sizes: M, L, XL, XXL available."
+    "image": "images/Jersey/jersey-portugal.jpeg",
+    "description": "Portugal-inspired fan edition jersey.",
+    "variants": {
+      "sizes": [
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ]
+    }
+  },
+  {
+    "id": "j2",
+    "name": "Brazil Away Black & Blue Edition Jersey",
+    "category": "Jerseys",
+    "price": 1150,
+    "originalPrice": 1600,
+    "image": "images/Jersey/jersey-brazil.jpeg",
+    "description": "Brazil away black and blue fan edition jersey.",
+    "variants": {
+      "sizes": [
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ]
+    }
+  },
+  {
+    "id": "j3",
+    "name": "Brazil Classic Yellow Edition Jersey",
+    "category": "Jerseys",
+    "price": 1150,
+    "originalPrice": 1600,
+    "image": "images/Jersey/jersey-brazil yellow.jpeg",
+    "description": "Brazil classic yellow fan edition jersey.",
+    "variants": {
+      "sizes": [
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ]
+    }
   },
   {
     "id": "t1",
-    "name": "Premium Comb Cotton Black T-Shirt",
+    "name": "Grey Melange V-Neck Logo Print T-Shirt",
     "category": "T-Shirts",
     "price": 650,
     "originalPrice": 950,
-    "image": "images/tshirt-1.jpg",
-    "description": "100% Organic Comb Cotton 180 GSM."
+    "image": "images/T-Shirt/Stylish T-Shirt 1.jpeg",
+    "description": "Grey melange V-neck tee with a bold black chest logo print.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
+  },
+  {
+    "id": "t2",
+    "name": "Charcoal Striped Box Graphic T-Shirt",
+    "category": "T-Shirts",
+    "price": 650,
+    "originalPrice": 950,
+    "image": "images/T-Shirt/Stylish T-Shirt 2.jpeg",
+    "description": "Charcoal crew-neck tee with a striped box graphic on the chest.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
+  },
+  {
+    "id": "t3",
+    "name": "White Mountain Oval Graphic T-Shirt",
+    "category": "T-Shirts",
+    "price": 650,
+    "originalPrice": 950,
+    "image": "images/T-Shirt/Stylish T-Shirt 3.jpeg",
+    "description": "White crew-neck tee with a blue mountain oval graphic print.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
+  },
+  {
+    "id": "t4",
+    "name": "Light Grey Denim Slogan T-Shirt",
+    "category": "T-Shirts",
+    "price": 650,
+    "originalPrice": 950,
+    "image": "images/T-Shirt/Stylish T-Shirt 4.jpeg",
+    "description": "Light grey melange crew-neck tee with a black slogan print.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
+  },
+  {
+    "id": "t5",
+    "name": "Red London Logo Print T-Shirt",
+    "category": "T-Shirts",
+    "price": 650,
+    "originalPrice": 950,
+    "image": "images/T-Shirt/Stylish T-Shirt 5.jpeg",
+    "description": "Bright red crew-neck tee with white and gold chest lettering.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
+  },
+  {
+    "id": "t6",
+    "name": "Navy New Jersey Print T-Shirt",
+    "category": "T-Shirts",
+    "price": 650,
+    "originalPrice": 950,
+    "image": "images/T-Shirt/Stylish T-Shirt 6.jpeg",
+    "description": "Navy crew-neck tee with a white and yellow New Jersey print.",
+    "variants": {
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "fabric": "100% Premium Cotton"
+    }
   },
   {
     "id": "c1",
-    "name": "Modern Calligraphy Wall Canvas",
+    "name": "Stonehenge Moonrise Wall Canvas",
     "category": "Wall Canvas",
     "price": 1450,
     "originalPrice": 2100,
-    "image": "images/canvas-1.jpg",
-    "description": "Size: 16x24 inch, Floating Frame."
+    "image": "images/Wall Canvas/Wall Canvas 1.jpeg",
+    "description": "Stonehenge at dusk under a full moon and soft pink sky.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
+  },
+  {
+    "id": "c2",
+    "name": "Sydney Opera House Sunset Wall Canvas",
+    "category": "Wall Canvas",
+    "price": 1450,
+    "originalPrice": 2100,
+    "image": "images/Wall Canvas/Wall Canvas 2.jpeg",
+    "description": "Sydney Opera House and Harbour Bridge in a golden sunset.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
+  },
+  {
+    "id": "c3",
+    "name": "Petra Treasury Wall Canvas",
+    "category": "Wall Canvas",
+    "price": 1450,
+    "originalPrice": 2100,
+    "image": "images/Wall Canvas/Wall Canvas 3.jpeg",
+    "description": "The rose-red Treasury of Petra with camels in the foreground.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
+  },
+  {
+    "id": "c4",
+    "name": "Mont Saint-Michel Wall Canvas",
+    "category": "Wall Canvas",
+    "price": 1450,
+    "originalPrice": 2100,
+    "image": "images/Wall Canvas/Wall Canvas 4.jpeg",
+    "description": "Mont Saint-Michel rising above the tidal shoreline.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
+  },
+  {
+    "id": "c5",
+    "name": "Istanbul Galata View Wall Canvas",
+    "category": "Wall Canvas",
+    "price": 1450,
+    "originalPrice": 2100,
+    "image": "images/Wall Canvas/Wall Canvas 5.jpeg",
+    "description": "Istanbul street view down to the Bosphorus and Galata Tower.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
+  },
+  {
+    "id": "c6",
+    "name": "Mindset Is Everything Chess Wall Canvas",
+    "category": "Wall Canvas",
+    "price": 1450,
+    "originalPrice": 2100,
+    "image": "images/Wall Canvas/Wall Canvas 6.jpeg",
+    "description": "Motivational chess art: a pawn casting a king's shadow.",
+    "variants": {
+      "dimensions": [
+        "12x18\"",
+        "16x24\"",
+        "24x36\""
+      ],
+      "frames": [
+        "Black",
+        "Natural Wood",
+        "White"
+      ]
+    }
   }
 ]
