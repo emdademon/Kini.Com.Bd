@@ -52,7 +52,8 @@
     "price": 1249,
     "originalPrice": 1749,
     "image": "images/Watches/watch-rolex-gold.jpg",
-    "description": "Black dial and gold-tone fluted bezel style."
+    "description": "Black dial and gold-tone fluted bezel style.",
+    "soldOut": true
   },
   {
     "id": "w7",
