@@ -6,7 +6,8 @@
     "price": 1249,
     "originalPrice": 1749,
     "image": "images/Watches/watch-blue.jpg",
-    "description": "Poedagar royal blue dial with polished steel bracelet."
+    "description": "Poedagar royal blue dial with polished steel bracelet.",
+    "soldOut": true
   },
   {
     "id": "w2",
