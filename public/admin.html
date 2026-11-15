@@ -164,7 +164,7 @@
                 </div>
                 <p id="s-error" class="hidden text-red-600 font-bold"></p>
                 <div class="border rounded-xl overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm min-w-[760px]">
+                    <table class="w-full text-left border-collapse text-sm min-w-[860px]">
                         <thead class="bg-slate-50 text-slate-500 font-bold border-b text-xs">
                             <tr>
                                 <th class="p-2 w-14">ছবি</th>
@@ -172,6 +172,7 @@
                                 <th class="p-2 w-28">বর্তমান মূল্য ৳</th>
                                 <th class="p-2 w-28">আগের মূল্য ৳</th>
                                 <th class="p-2 w-72">Image (আপলোড / পাথ)</th>
+                                <th class="p-2 w-24 text-center">Sold Out (স্টক শেষ)</th>
                             </tr>
                         </thead>
                         <tbody id="sheet-rows" class="divide-y divide-slate-100"></tbody>
@@ -189,6 +190,7 @@
                         <th class="p-4">ক্যাটাগরি</th>
                         <th class="p-4">বর্তমান মূল্য</th>
                         <th class="p-4">আগের মূল্য</th>
+                        <th class="p-4">স্ট্যাটাস (Status)</th>
                         <th class="p-4 text-right">অ্যাকশন</th>
                     </tr>
                 </thead>
@@ -246,6 +248,11 @@
                     <label for="p-desc" class="font-bold text-slate-700">Description (বিবরণ)</label>
                     <textarea id="p-desc" rows="3" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
                 </div>
+                <label for="p-soldout" class="flex items-center gap-2.5 border rounded-xl p-3 cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" id="p-soldout" class="w-4 h-4 accent-red-600">
+                    <span class="font-bold text-slate-700">Mark as Sold Out (স্টক শেষ)</span>
+                    <span class="text-slate-500">— ওয়েবসাইটে অর্ডার বন্ধ থাকবে</span>
+                </label>
                 <p id="modal-error" class="hidden text-red-600 font-bold"></p>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
@@ -457,12 +464,55 @@
                     <td class="p-3"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap">${escapeHTML(p.category)}</span></td>
                     <td class="p-3 font-black text-slate-900">৳${escapeHTML(p.price)}</td>
                     <td class="p-3 text-slate-400 line-through">${p.originalPrice ? '৳' + escapeHTML(p.originalPrice) : ''}</td>
+                    <td class="p-3">${statusButton(p, index)}</td>
                     <td class="p-3 text-right whitespace-nowrap">
                         <button onclick="editProd(${index})" class="text-blue-600 font-bold mr-3 text-xs hover:underline">এডিট</button>
                         <button onclick="deleteProd(${index}, this)" class="text-red-600 font-bold text-xs hover:underline disabled:opacity-50 disabled:no-underline">ডিলিট</button>
                     </td>
                 </tr>
-            `).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">কোনো প্রোডাক্ট নেই</td></tr>';
+            `).join('') || '<tr><td colspan="7" class="p-8 text-center text-slate-400">কোনো প্রোডাক্ট নেই</td></tr>';
+        }
+
+        // ---- 1-click Sold Out / In Stock toggle -----------------------------
+        const isSoldOut = p => p.soldOut === true;
+        const statusSaving = {};              // id -> status being saved (shown immediately)
+
+        function statusButton(p, index) {
+            const saving = Object.prototype.hasOwnProperty.call(statusSaving, p.id);
+            const sold = saving ? statusSaving[p.id] : isSoldOut(p);
+            const look = sold ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100';
+            const action = sold ? 'In Stock করুন' : 'Sold Out করুন';
+            return `<button type="button" onclick="toggleSoldOut(${index})" ${saving ? 'disabled' : ''} aria-pressed="${sold}" title="${action}" class="border rounded-full px-3 py-1 text-left leading-tight whitespace-nowrap transition disabled:opacity-60 disabled:cursor-wait ${look}">
+                        <span class="flex items-center gap-1.5 text-xs font-black"><span class="w-2 h-2 rounded-full ${sold ? 'bg-red-500' : 'bg-emerald-500'}"></span>${sold ? 'Sold Out' : 'In Stock'}</span>
+                        <span class="block text-[10px] opacity-75">${saving ? SAVING_TEXT : action}</span>
+                    </button>`;
+        }
+
+        async function toggleSoldOut(idx) {
+            const p = productsData[idx];
+            if (!p || Object.prototype.hasOwnProperty.call(statusSaving, p.id)) return;
+            const id = p.id, target = !isSoldOut(p);
+            statusSaving[id] = target;        // flip the row straight away; the save follows
+            renderTable();
+            try {
+                await commitChanges(`Mark ${target ? 'sold out' : 'in stock'}: ${p.name}`, products => {
+                    const item = products.find(x => x.id === id);
+                    if (!item) throw new Error('এই প্রোডাক্টটি আর ক্যাটালগে নেই');
+                    item.soldOut = target;
+                    return products;
+                });
+                if (sheetDrafts[id]) {         // keep an open spreadsheet edit in step with the new status
+                    sheetDrafts[id].soldOut = target;
+                    const now = productsData.find(x => x.id === id);
+                    if (now && !draftChanged(now, sheetDrafts[id])) delete sheetDrafts[id];
+                }
+                toast(target ? `Sold Out করা হয়েছে: ${p.name}` : `In Stock করা হয়েছে: ${p.name}`);
+            } catch (err) {
+                alert('স্ট্যাটাস সেভ করতে সমস্যা হয়েছে: ' + saveErrorText(err));
+            } finally {
+                delete statusSaving[id];
+                refreshViews();
+            }
         }
 
         // ---- Single product modal ------------------------------------------
@@ -486,6 +536,7 @@
                 $('p-original-price').value = p.originalPrice || '';
                 $('p-image').value = p.image || '';
                 $('p-desc').value = p.description || '';
+                $('p-soldout').checked = isSoldOut(p);
             }
             setPreview(p && p.image ? imageSrc(p.image) : '', p && p.image ? `বর্তমান: ${p.image}` : '');
             $('prod-modal').classList.remove('hidden');
@@ -581,6 +632,7 @@
             const originalPrice = originalRaw === '' ? 0 : Number(originalRaw);
             const manualPath = cleanPath($('p-image').value);
             const description = $('p-desc').value.trim();
+            const soldOut = $('p-soldout').checked;
             const image = pendingImage;
 
             if (!name) return showError(errorBox, 'প্রোডাক্টের নাম দিন');
@@ -609,6 +661,7 @@
                     if (originalPrice) item.originalPrice = originalPrice; else delete item.originalPrice;
                     item.image = imagePath;
                     item.description = description;
+                    item.soldOut = soldOut;
                     if (!current || current.category !== category) {
                         if (DEFAULT_VARIANTS[category]) item.variants = DEFAULT_VARIANTS[category]; else delete item.variants;
                     }
@@ -726,7 +779,7 @@
 
         function sheetValues(p) {
             const d = sheetDrafts[p.id];
-            return d || { name: p.name || '', price: String(p.price ?? ''), originalPrice: p.originalPrice ? String(p.originalPrice) : '', image: p.image || '', pendingImage: null };
+            return d || { name: p.name || '', price: String(p.price ?? ''), originalPrice: p.originalPrice ? String(p.originalPrice) : '', image: p.image || '', soldOut: isSoldOut(p), pendingImage: null };
         }
 
         function draftChanged(p, d) {
@@ -734,7 +787,8 @@
                 || d.name.trim() !== (p.name || '')
                 || Number(d.price) !== Number(p.price)
                 || (d.originalPrice.trim() === '' ? 0 : Number(d.originalPrice)) !== (Number(p.originalPrice) || 0)
-                || cleanPath(d.image) !== cleanPath(p.image);
+                || cleanPath(d.image) !== cleanPath(p.image)
+                || !!d.soldOut !== isSoldOut(p);
         }
 
         function renderSheet() {
@@ -760,8 +814,9 @@
                         </div>
                         <span data-role="file-info" class="text-[11px] text-emerald-700 break-all">${v.pendingImage ? 'নতুন ছবি: ' + escapeHTML(v.pendingImage.fileName) : ''}</span>
                     </td>
+                    <td class="p-2 text-center"><input data-field="soldOut" type="checkbox" ${v.soldOut ? 'checked' : ''} aria-label="Mark as Sold Out (স্টক শেষ)" title="Mark as Sold Out (স্টক শেষ)" class="w-5 h-5 accent-red-600 cursor-pointer"></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" class="p-8 text-center text-slate-400">এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই</td></tr>';
+            }).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই</td></tr>';
             updateSheetCount();
         }
 
@@ -780,6 +835,7 @@
             const previous = sheetDrafts[p.id];
             const draft = {
                 name: field('name'), price: field('price'), originalPrice: field('originalPrice'), image: field('image'),
+                soldOut: tr.querySelector('[data-field="soldOut"]').checked,
                 pendingImage: pendingImageOverride !== undefined ? pendingImageOverride : (previous ? previous.pendingImage : null)
             };
             if (draftChanged(p, draft)) sheetDrafts[p.id] = draft; else delete sheetDrafts[p.id];
@@ -856,7 +912,7 @@
                 if (!Number.isFinite(original) || original < 0) return fail('সঠিক আগের মূল্য দিন');
                 if (original && original <= price) return fail('আগের (Cut) মূল্য বর্তমান মূল্যের চেয়ে বেশি হতে হবে, অথবা ফাঁকা রাখুন');
                 if (!d.pendingImage && !image) return fail('ছবির পাথ দিন অথবা ছবি আপলোড করুন');
-                edits.push({ id, name, price, original, image, pendingImage: d.pendingImage, category: p.category, draft: d });
+                edits.push({ id, name, price, original, image, soldOut: !!d.soldOut, pendingImage: d.pendingImage, category: p.category, draft: d });
             }
             if (!edits.length) return;
 
@@ -881,6 +937,7 @@
                         p.price = edit.price;
                         if (edit.original) p.originalPrice = edit.original; else delete p.originalPrice;
                         p.image = edit.image;
+                        if (edit.soldOut || 'soldOut' in p) p.soldOut = edit.soldOut;
                         saved++;
                     }
                     return products;
