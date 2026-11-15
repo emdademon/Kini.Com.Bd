@@ -31,7 +31,7 @@ Vite serves the storefront on port 5173. `npm run build` synchronizes the root `
 
 ## Catalog format
 
-`products.json` is the source catalog. A product uses `id`, `name`, `category`, `price`, `image`, and optional `originalPrice`, `description`, and `variants`. Example variant fields:
+`products.json` is the source catalog. A product uses `id`, `name`, `category`, `price`, `image`, and optional `originalPrice`, `description`, and `variants`. An optional boolean `soldOut` (default `false`) marks a product as out of stock: the storefront shows a SOLD OUT badge and blocks ordering, and the Admin Portal toggles it with one click from the Status column. Example variant fields:
 
 ```json
 {"sizes":["M","L","XL","XXL"],"fabric":"100% Premium Cotton"}
