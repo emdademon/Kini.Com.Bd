@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Kini.Com.Bd - Admin Panel</title>
+    <title>Admin Panel</title>
     <link rel="icon" href="./images/kini.com.jpg" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,25 +15,25 @@
     <!-- Login / Token -->
     <div id="login-sec" class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg border border-slate-200 mt-10">
         <div class="flex items-center gap-3 mb-4">
-            <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Kini.Com.Bd logo" class="w-12 h-12 rounded-xl object-cover border">
+            <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Admin logo" class="w-12 h-12 rounded-xl object-cover border">
             <div>
                 <h2 class="text-xl font-bold text-slate-900 leading-tight">GitHub Admin Login</h2>
                 <p class="text-xs text-slate-500">গিটহাবের Personal Access Token দিয়ে লগইন করুন</p>
             </div>
         </div>
-        <form id="login-form" class="space-y-3">
+        <form id="login-form" autocomplete="off" class="space-y-3">
             <div>
                 <label for="gh-owner" class="text-xs font-bold text-slate-700">GitHub Username</label>
-                <input type="text" id="gh-owner" value="emdademon" autocomplete="username" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <input type="text" id="gh-owner" placeholder="Enter GitHub Username" autocomplete="off" spellcheck="false" autocapitalize="none" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
             </div>
             <div>
                 <label for="gh-repo" class="text-xs font-bold text-slate-700">Repository Name</label>
-                <input type="text" id="gh-repo" value="Kini.Com.Bd" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <input type="text" id="gh-repo" placeholder="Enter Repository Name" autocomplete="off" spellcheck="false" autocapitalize="none" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
             </div>
             <div>
                 <label for="gh-token" class="text-xs font-bold text-slate-700">Personal Access Token (PAT)</label>
-                <input type="password" id="gh-token" placeholder="github_pat_xxxxxxxx" autocomplete="current-password" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                <p class="text-[11px] text-slate-500 mt-1">টোকেনে এই রিপোজিটরির <b>Contents: Read and write</b> পারমিশন লাগবে। টোকেন শুধু এই ব্রাউজার ট্যাবে থাকে, কোথাও সেভ হয় না।</p>
+                <input type="password" id="gh-token" placeholder="Enter Access Token" autocomplete="off" spellcheck="false" class="w-full border p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <p class="text-[11px] text-slate-500 mt-1">টোকেনে এই রিপোজিটরির <b>Contents: Read and write</b> পারমিশন লাগবে। সেশন তথ্য শুধু এই ব্রাউজার ট্যাবে থাকে, ট্যাব বন্ধ করলে মুছে যায়।</p>
             </div>
             <button type="submit" id="login-btn" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition disabled:opacity-60">লগইন & প্রোডাক্ট লোড করুন</button>
             <p id="login-error" class="hidden text-xs text-red-600 font-bold"></p>
@@ -44,14 +44,15 @@
     <div id="dashboard-sec" class="hidden max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200 gap-4">
             <div class="flex items-center gap-3">
-                <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Kini.Com.Bd logo" class="w-11 h-11 rounded-xl object-cover border">
+                <img src="./images/kini.com.jpg" onerror="this.onerror=null;this.src='./images/kini.com.png'" alt="Store logo" class="w-11 h-11 rounded-xl object-cover border">
                 <div>
-                    <h1 class="text-xl font-black text-slate-900">Kini.Com.Bd প্রোডাক্ট ম্যানেজমেন্ট</h1>
+                    <h1 id="dashboard-title" class="text-xl font-black text-slate-900">প্রোডাক্ট ম্যানেজমেন্ট</h1>
                     <p class="text-xs text-slate-500 mt-0.5" id="repo-status">সংযুক্ত রিপোজিটরি</p>
                 </div>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
                 <a href="./index.html" class="border text-slate-600 font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-50">স্টোর দেখুন</a>
+                <button type="button" onclick="logoutAdmin()" class="border border-red-200 text-red-600 font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-red-50">লগআউট</button>
                 <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md">+ নতুন প্রোডাক্ট যোগ করুন</button>
             </div>
         </div>
@@ -413,32 +414,103 @@
         function showError(node, text) { node.textContent = text; node.classList.remove('hidden'); }
         function hideError(node) { node.classList.add('hidden'); }
 
-        // ---- Login ---------------------------------------------------------
+        // ---- Login & Session (sessionStorage only after API verification) ---
+        const ADMIN_SESSION_KEY = 'kc_admin_session';
+
+        function saveAdminSession(owner, repo, token) {
+            try { sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ owner, repo, token })); } catch (_) {}
+        }
+
+        function readAdminSession() {
+            try {
+                const raw = sessionStorage.getItem(ADMIN_SESSION_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                const owner = String(parsed?.owner || '').trim();
+                const repo = String(parsed?.repo || '').trim();
+                const token = String(parsed?.token || '').trim();
+                return owner && repo && token ? { owner, repo, token } : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function clearAdminSession() {
+            try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (_) {}
+        }
+
+        function clearLoginInputs() {
+            $('gh-owner').value = '';
+            $('gh-repo').value = '';
+            $('gh-token').value = '';
+        }
+
+        async function authenticateAndLoad(owner, repo, token) {
+            gh.owner = owner;
+            gh.repo = repo;
+            gh.token = token;
+            const repoInfo = await api('');
+            gh.branch = repoInfo.default_branch;
+            if (repoInfo.permissions && !repoInfo.permissions.push) throw new Error('এই টোকেনে রিপোজিটরিতে লেখার (write) অনুমতি নেই');
+            headSha = (await api(`/git/ref/heads/${encodePath(gh.branch)}?t=${Date.now()}`)).object.sha;
+            productsData = await fetchProductsAt(headSha);
+            saveAdminSession(owner, repo, token);
+            clearLoginInputs();
+            $('login-sec').classList.add('hidden');
+            $('dashboard-sec').classList.remove('hidden');
+            showBulkTab('uniform');
+            refreshViews();
+            loadSiteConfig();
+        }
+
+        function logoutAdmin() {
+            clearAdminSession();
+            if (typeof statsTimer !== 'undefined' && statsTimer) { clearInterval(statsTimer); statsTimer = null; }
+            gh = { owner: '', repo: '', token: '', branch: '' };
+            headSha = '';
+            productsData = [];
+            sheetDrafts = {};
+            clearLoginInputs();
+            hideError($('login-error'));
+            $('dashboard-sec').classList.add('hidden');
+            $('login-sec').classList.remove('hidden');
+        }
+
         $('login-form').addEventListener('submit', async e => {
             e.preventDefault();
-            gh.owner = $('gh-owner').value.trim();
-            gh.repo = $('gh-repo').value.trim();
-            gh.token = $('gh-token').value.trim();
+            const owner = $('gh-owner').value.trim();
+            const repo = $('gh-repo').value.trim();
+            const token = $('gh-token').value.trim();
             const errorBox = $('login-error');
             hideError(errorBox);
-            if (!gh.owner || !gh.repo || !gh.token) return showError(errorBox, 'দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
+            if (!owner || !repo || !token) return showError(errorBox, 'দয়া করে গিটহাব ইউজারনেম, রিপোজিটরি নাম এবং টোকেন দিন');
 
             const btn = $('login-btn');
             btn.disabled = true;
             try {
-                const repo = await api('');
-                gh.branch = repo.default_branch;
-                if (repo.permissions && !repo.permissions.push) throw new Error('এই টোকেনে রিপোজিটরিতে লেখার (write) অনুমতি নেই');
-                headSha = (await api(`/git/ref/heads/${encodePath(gh.branch)}?t=${Date.now()}`)).object.sha;
-                productsData = await fetchProductsAt(headSha);
-                $('login-sec').classList.add('hidden');
-                $('dashboard-sec').classList.remove('hidden');
-                showBulkTab('uniform');
-                refreshViews();
-                loadSiteConfig();
+                await authenticateAndLoad(owner, repo, token);
             } catch (err) {
+                gh = { owner: '', repo: '', token: '', branch: '' };
                 const hint = err.status === 401 ? 'টোকেন ভুল বা মেয়াদ শেষ' : err.status === 404 ? 'রিপোজিটরি বা products.json পাওয়া যায়নি' : err.message;
                 showError(errorBox, 'ত্রুটি: ' + hint);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        // Restore an already-verified session on refresh; leave inputs 100% blank otherwise.
+        window.addEventListener('DOMContentLoaded', async () => {
+            clearLoginInputs();
+            const saved = readAdminSession();
+            if (!saved) return;
+            const btn = $('login-btn');
+            btn.disabled = true;
+            try {
+                await authenticateAndLoad(saved.owner, saved.repo, saved.token);
+            } catch (_) {
+                clearAdminSession();
+                gh = { owner: '', repo: '', token: '', branch: '' };
+                clearLoginInputs();
             } finally {
                 btn.disabled = false;
             }
@@ -450,6 +522,7 @@
         // Re-draws everything from memory after a save. Never reloads the page.
         function refreshViews() {
             if (!gh.branch) return;
+            $('dashboard-title').textContent = `${gh.repo} প্রোডাক্ট ম্যানেজমেন্ট`;
             $('repo-status').innerText = `সংযুক্ত: ${gh.owner}/${gh.repo} (${gh.branch}) · ${productsData.length} টি প্রোডাক্ট`;
             renderTable();
             renderSheet();

@@ -6,7 +6,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         storefront: fileURLToPath(new URL('./index.html', import.meta.url)),
-        admin: fileURLToPath(new URL('./admin.html', import.meta.url)),
+        adminpanel: fileURLToPath(new URL('./adminpanel.html', import.meta.url)),
       },
     },
   },
