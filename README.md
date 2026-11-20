@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Vite serves the storefront on port 5173. `npm run build` synchronizes the root `products.json` into `public/` before creating the deployable `dist/` directory. Vite builds both `index.html` and the root `admin.html` as page entries, so the Admin Portal is deployed at `/admin.html`. The copies in `public/images/` mirror the source assets in `images/` so Vite production builds can serve them at the same relative paths.
+Vite serves the storefront on port 5173. `npm run build` synchronizes the root `products.json` into `public/` before creating the deployable `dist/` directory. Vite builds both `index.html` and the root `adminpanel.html` as page entries, so the Admin Portal is deployed at `/adminpanel.html`. The copies in `public/images/` mirror the source assets in `images/` so Vite production builds can serve them at the same relative paths.
 
 ## Brand and contact
 
@@ -27,7 +27,6 @@ Vite serves the storefront on port 5173. `npm run build` synchronizes the root `
 - Search suggestions, wishlist, quick view, cart drawer, and toast notifications.
 - T-shirts include M/L/XL/XXL sizing and a cotton fabric spec. Jerseys include size selection. Wall Canvas includes 12x18, 16x24, and 24x36 inch dimensions with frame finish selection.
 - Checkout accepts advance bKash payment only, requires a TrxID, and calculates ৳70 delivery inside Chattogram or ৳130 outside. WhatsApp order summaries open to `+8801312866114`.
-- Footer includes the discreet `Admin Portal` link to `admin.html`.
 
 ## Catalog format
 
@@ -45,7 +44,7 @@ Product photos live in `public/images/<folder>/` (`Watches`, `Jersey`, `T-Shirt`
 
 ## Admin Portal
 
-`admin.html` (copied to `public/admin.html` at build time) manages the catalog through the GitHub API using a Personal Access Token with **Contents: Read and write** on this repository. The Add/Edit form covers title, category, present price, original/cut price, image upload with preview, and description. Saving makes a single commit to the default branch containing the uploaded photo (`public/images/<folder>/<filename>`) plus `products.json` and `public/products.json`. Deleting a product removes only its catalog entry; the image file is kept.
+`adminpanel.html` (copied to `public/adminpanel.html` at build time; not linked from the storefront) manages the catalog through the GitHub API using a Personal Access Token with **Contents: Read and write** on this repository. The login form starts completely blank and stores credentials in `sessionStorage` only after the GitHub API verifies write access for the current tab session. The Add/Edit form covers title, category, present price, original/cut price, image upload with preview, and description. Saving makes a single commit to the default branch containing the uploaded photo (`public/images/<folder>/<filename>`) plus `products.json` and `public/products.json`. Deleting a product removes only its catalog entry; the image file is kept.
 
 Before every save the panel reads the newest branch head, applies the change on top of it, and retries by itself on a conflict, so rapid edits never require a page reload. The **Bulk Edit** section at the top of the dashboard offers a one-click price update for a whole category and an inline spreadsheet (title, prices, image) whose changes are saved together in one commit.
 
